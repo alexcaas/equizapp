@@ -45,20 +45,20 @@ public class Routes implements ApplicationRoutes {
         ///////////////////////////////////////////////////////////////////////
         // Api for management of software
         ///////////////////////////////////////////////////////////////////////
-        router.GET().route("/api/{username}/articles.json").with(ApiController.class, "getArticlesJson");
-        router.GET().route("/api/{username}/articles.xml").with(ApiController.class, "getArticlesXml");
-        router.POST().route("/api/{username}/article.json").with(ApiController.class, "postArticleJson");
-        router.POST().route("/api/{username}/article.xml").with(ApiController.class, "postArticleXml");
+        router.GET().route("/api/user.json").with(ApiController.class, "getUserJson");
+        //router.GET().route("/api/{username}/articles.xml").with(ApiController.class, "getArticlesXml");
+        //router.POST().route("/api/{username}/article.json").with(ApiController.class, "postArticleJson");
+        //router.POST().route("/api/{username}/article.xml").with(ApiController.class, "postArticleXml");
  
         ///////////////////////////////////////////////////////////////////////
         // Assets (pictures / javascript)
         ///////////////////////////////////////////////////////////////////////    
-        router.GET().route("/assets/.*").with(AssetsController.class, "serve");
+        //router.GET().route("/assets/.*").with(AssetsController.class, "serve");
         
         ///////////////////////////////////////////////////////////////////////
         // Index / Catchall shows index page
         ///////////////////////////////////////////////////////////////////////
-        router.GET().route("/.*").with(ApiController.class, "index");
+        //router.GET().route("/.*").with(ApiController.class, "index");
     }
 
 }

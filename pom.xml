@@ -10,15 +10,16 @@
 
     <artifactId>equizapp</artifactId>
     <packaging>war</packaging>
-    <groupId>com.alexcaas.equizapp</groupId>
+    <groupId>com.alexcaas</groupId>
     <version>1.0-SNAPSHOT</version>
     
     <url></url>
     
     
     <properties>
-        <ninja.version>2.3.0</ninja.version>
-        <jetty.version>9.0.5.v20130815</jetty.version>
+        <ninja.version>3.0.3</ninja.version>
+        <jetty.version>9.1.2.v20140210</jetty.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
 
@@ -82,7 +83,22 @@
                             </excludes>
                         </scanTargetPattern>
                     </scanTargetPatterns>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>ninja.mode</name>
+                            <value>dev</value>
+                        </systemProperty>
+                    </systemProperties>
                 </configuration>
+            </plugin>
+
+            <!-- Allows you to run Ninja via the SuperDevMode. -->
+            <!-- run "mvn ninja:run" on the command line for the best -->
+            <!-- development experience. -->
+            <plugin>
+                <groupId>org.ninjaframework</groupId>
+                <artifactId>ninja-maven-plugin</artifactId>
+                <version>${ninja.version}</version>
             </plugin>
 
             <plugin>
@@ -108,8 +124,26 @@
                     </archive>
                 </configuration>
             </plugin>
-
+            
         </plugins>
+        
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
 
     </build>
 
@@ -127,36 +161,35 @@
             <version>1.10.3</version>
         </dependency>
 
-        <!--<dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.3.172</version>
-        </dependency>-->
-
         <dependency>
             <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId> 
             <version>9.2-1003-jdbc4</version>
         </dependency>
-		
-        <dependency>
+	
+        <!-- If you want to deploy to a war please -->
+        <!-- comment ninja-standalone dependency and  -->
+        <!-- uncomment the dependency for ninja-servlet -->
+        <!--<dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-servlet</artifactId>
             <version>${ninja.version}</version>
-        </dependency>
+        </dependency>-->
+        
         
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-standalone</artifactId>
             <version>${ninja.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
-            <scope>provided</scope>
+        
+       <!-- <dependency>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-test-utilities</artifactId>
+            <version>${ninja.version}</version>
+            <scope>test</scope>
         </dependency>
+        -->
 
     </dependencies>
 

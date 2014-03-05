@@ -4,6 +4,11 @@
   <persistence-unit name="postgresql" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <non-jta-data-source>Ujian</non-jta-data-source>
+    <class>models.Tanswer</class>
+    <class>models.Tgroup</class>
+    <class>models.Titem</class>
+    <class>models.Tusergroup</class>
+    <class>models.Tuser</class>
     <properties>
       <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
       <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>

@@ -16,65 +16,27 @@
 
 package controllers;
 
-import models.ArticleDto;
-import models.ArticlesDto;
-import ninja.FilterWith;
 import ninja.Result;
 import ninja.Results;
-import ninja.SecureFilter;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import dao.ArticleDao;
+import models.Tuser;
+import dao.UserDao;
+
 
 @Singleton
 public class ApiController {
 
     @Inject
-    ArticleDao articleDao;
+    UserDao userDao;
 
-    public Result getArticlesJson() {
+    public Result getUserJson() {
+        
+        Tuser user = (Tuser) userDao.getUser();
 
-        ArticlesDto articlesDto = articleDao.getAllArticles();
-
-        return Results.json().render(articlesDto);
-
-    }
-
-    public Result getArticlesXml() {
-
-        ArticlesDto articlesDto = articleDao.getAllArticles();
-
-        return Results.xml().render(articlesDto);
-
-    }
-
-    @FilterWith(SecureFilter.class)
-    public Result postArticleJson(String username,
-                                  ArticleDto articleDto) {
-
-        boolean succeeded = articleDao.postArticle(username, articleDto);
-
-        if (!succeeded) {
-            return Results.notFound();
-        } else {
-            return Results.ok();
-        }
-
-    }
-
-    @FilterWith(SecureFilter.class)
-    public Result postArticleXml(String username,
-                                 ArticleDto articleDto) {
-
-        boolean succeeded = articleDao.postArticle(username, articleDto);
-
-        if (!succeeded) {
-            return Results.notFound();
-        } else {
-            return Results.ok();
-        }
+        return Results.json().render(user);
 
     }
 }

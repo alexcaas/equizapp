@@ -1,13 +1,13 @@
 package dao;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
-import models.User;
+import models.Tuser;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
+import javax.persistence.TypedQuery;
 
 public class UserDao {
     
@@ -15,29 +15,14 @@ public class UserDao {
     Provider<EntityManager> entityManagerProvider;
     
     @Transactional
-    public boolean isUserAndPasswordValid(String username, String password) {
+    public Tuser getUser() {
         
-        if (username != null && password != null) {
+        EntityManager entityManager = entityManagerProvider.get();
             
-            EntityManager entityManager = entityManagerProvider.get();
-            
-            Query q = entityManager.createQuery("SELECT x FROM User x WHERE username = :usernameParam");
-            User user = (User) q.setParameter("usernameParam", username).getSingleResult();   
+        TypedQuery q = entityManager.createNamedQuery("Tuser.findAll", Tuser.class);
+        Tuser user = (Tuser) q.getSingleResult();   
 
-            
-            if (user != null) {
-                
-                if (user.password.equals(password)) {
-
-                    return true;
-                }
-                
-            }
-
-        }
-        
-        return false;
- 
+        return user;
     }
 
 }
