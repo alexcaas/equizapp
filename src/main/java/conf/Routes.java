@@ -18,11 +18,11 @@ package conf;
 
 import com.google.inject.Inject;
 
-import ninja.AssetsController;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.utils.NinjaProperties;
 import controllers.ApiController;
+import controllers.LoginLogoutController;
 
 public class Routes implements ApplicationRoutes {
     
@@ -45,7 +45,12 @@ public class Routes implements ApplicationRoutes {
         ///////////////////////////////////////////////////////////////////////
         // Api for management of software
         ///////////////////////////////////////////////////////////////////////
-        router.GET().route("/api/user.json").with(ApiController.class, "getUserJson");
+        router.POST().route("/api/login").with(LoginLogoutController.class, "postLogin");
+        router.GET().route("/api/logout").with(LoginLogoutController.class, "getLogout");
+        router.POST().route("/api/registeruser").with(ApiController.class, "postRegisterUser");
+        
+        
+        router.GET().route("/api/{useremail}/user.json").with(ApiController.class, "getUserByEmailJson");
         //router.GET().route("/api/{username}/articles.xml").with(ApiController.class, "getArticlesXml");
         //router.POST().route("/api/{username}/article.json").with(ApiController.class, "postArticleJson");
         //router.POST().route("/api/{username}/article.xml").with(ApiController.class, "postArticleXml");

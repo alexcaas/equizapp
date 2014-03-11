@@ -21,7 +21,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -38,17 +37,15 @@ import javax.validation.constraints.Size;
 public class Titem implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "itemid")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long itemid;
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 2147483647)
     @Column(name = "itemstring")
     private String itemstring;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "itemdifficulty")
     private short itemdifficulty;
     @JoinColumn(name = "groupcode", referencedColumnName = "groupcode")
@@ -64,8 +61,7 @@ public class Titem implements Serializable {
         this.itemid = itemid;
     }
 
-    public Titem(Long itemid, String itemstring, short itemdifficulty) {
-        this.itemid = itemid;
+    public Titem(String itemstring, short itemdifficulty) {
         this.itemstring = itemstring;
         this.itemdifficulty = itemdifficulty;
     }

@@ -18,7 +18,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -35,17 +34,15 @@ import javax.validation.constraints.Size;
 public class Tanswer implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "answerid")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long answerid;
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 2147483647)
     @Column(name = "answerstring")
     private String answerstring;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "answercorrect")
     private boolean answercorrect;
     @JoinColumn(name = "itemid", referencedColumnName = "itemid")
@@ -59,8 +56,7 @@ public class Tanswer implements Serializable {
         this.answerid = answerid;
     }
 
-    public Tanswer(Long answerid, String answerstring, boolean answercorrect) {
-        this.answerid = answerid;
+    public Tanswer(String answerstring, boolean answercorrect) {
         this.answerstring = answerstring;
         this.answercorrect = answercorrect;
     }

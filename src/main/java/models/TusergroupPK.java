@@ -11,7 +11,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
  *
@@ -21,28 +20,19 @@ import javax.validation.constraints.Size;
 public class TusergroupPK implements Serializable {
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 254)
-    @Column(name = "useremail")
-    private String useremail;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "groupcode")
     private int groupcode;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "userid")
+    private long userid;
 
     public TusergroupPK() {
     }
 
-    public TusergroupPK(String useremail, int groupcode) {
-        this.useremail = useremail;
+    public TusergroupPK(int groupcode, long userid) {
         this.groupcode = groupcode;
-    }
-
-    public String getUseremail() {
-        return useremail;
-    }
-
-    public void setUseremail(String useremail) {
-        this.useremail = useremail;
+        this.userid = userid;
     }
 
     public int getGroupcode() {
@@ -53,11 +43,19 @@ public class TusergroupPK implements Serializable {
         this.groupcode = groupcode;
     }
 
+    public long getUserid() {
+        return userid;
+    }
+
+    public void setUserid(long userid) {
+        this.userid = userid;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (useremail != null ? useremail.hashCode() : 0);
         hash += (int) groupcode;
+        hash += (int) userid;
         return hash;
     }
 
@@ -68,10 +66,10 @@ public class TusergroupPK implements Serializable {
             return false;
         }
         TusergroupPK other = (TusergroupPK) object;
-        if ((this.useremail == null && other.useremail != null) || (this.useremail != null && !this.useremail.equals(other.useremail))) {
+        if (this.groupcode != other.groupcode) {
             return false;
         }
-        if (this.groupcode != other.groupcode) {
+        if (this.userid != other.userid) {
             return false;
         }
         return true;
@@ -79,7 +77,7 @@ public class TusergroupPK implements Serializable {
 
     @Override
     public String toString() {
-        return "models.TusergroupPK[ useremail=" + useremail + ", groupcode=" + groupcode + " ]";
+        return "models.TusergroupPK[ groupcode=" + groupcode + ", userid=" + userid + " ]";
     }
     
 }

@@ -40,21 +40,18 @@ import javax.validation.constraints.Size;
 public class Tgroup implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "groupcode")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer groupcode;
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "groupname")
     private String groupname;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "groupitemsnumber")
     private short groupitemsnumber;
     @Basic(optional = false)
-    @NotNull
     @Column(name = "groupdatecreation")
     @Temporal(TemporalType.TIMESTAMP)
     private Date groupdatecreation;
@@ -70,8 +67,7 @@ public class Tgroup implements Serializable {
         this.groupcode = groupcode;
     }
 
-    public Tgroup(Integer groupcode, String groupname, short groupitemsnumber, Date groupdatecreation) {
-        this.groupcode = groupcode;
+    public Tgroup(String groupname, short groupitemsnumber, Date groupdatecreation) {
         this.groupname = groupname;
         this.groupitemsnumber = groupitemsnumber;
         this.groupdatecreation = groupdatecreation;

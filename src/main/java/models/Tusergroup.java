@@ -27,10 +27,10 @@ import javax.persistence.TemporalType;
 @Table(name = "tusergroup")
 @NamedQueries({
     @NamedQuery(name = "Tusergroup.findAll", query = "SELECT t FROM Tusergroup t"),
-    @NamedQuery(name = "Tusergroup.findByUseremail", query = "SELECT t FROM Tusergroup t WHERE t.tusergroupPK.useremail = :useremail"),
     @NamedQuery(name = "Tusergroup.findByGroupcode", query = "SELECT t FROM Tusergroup t WHERE t.tusergroupPK.groupcode = :groupcode"),
     @NamedQuery(name = "Tusergroup.findByUsertreat", query = "SELECT t FROM Tusergroup t WHERE t.usertreat = :usertreat"),
-    @NamedQuery(name = "Tusergroup.findByDatetestdone", query = "SELECT t FROM Tusergroup t WHERE t.datetestdone = :datetestdone")})
+    @NamedQuery(name = "Tusergroup.findByDatetestdone", query = "SELECT t FROM Tusergroup t WHERE t.datetestdone = :datetestdone"),
+    @NamedQuery(name = "Tusergroup.findByUserid", query = "SELECT t FROM Tusergroup t WHERE t.tusergroupPK.userid = :userid")})
 public class Tusergroup implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
@@ -40,7 +40,7 @@ public class Tusergroup implements Serializable {
     @Column(name = "datetestdone")
     @Temporal(TemporalType.TIMESTAMP)
     private Date datetestdone;
-    @JoinColumn(name = "useremail", referencedColumnName = "useremail", insertable = false, updatable = false)
+    @JoinColumn(name = "userid", referencedColumnName = "userid", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Tuser tuser;
     @JoinColumn(name = "groupcode", referencedColumnName = "groupcode", insertable = false, updatable = false)
@@ -54,8 +54,8 @@ public class Tusergroup implements Serializable {
         this.tusergroupPK = tusergroupPK;
     }
 
-    public Tusergroup(String useremail, int groupcode) {
-        this.tusergroupPK = new TusergroupPK(useremail, groupcode);
+    public Tusergroup(int groupcode, long userid) {
+        this.tusergroupPK = new TusergroupPK(groupcode, userid);
     }
 
     public TusergroupPK getTusergroupPK() {
