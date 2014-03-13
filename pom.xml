@@ -196,18 +196,6 @@
             <version>1.50</version>
             <type>jar</type>
         </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk15on</artifactId>
-            <version>1.50</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-ext-jdk15on</artifactId>
-            <version>1.50</version>
-            <type>jar</type>
-        </dependency>
     </dependencies>
 
 </project>

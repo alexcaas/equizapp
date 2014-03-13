@@ -52,10 +52,6 @@ public class Tanswer implements Serializable {
     public Tanswer() {
     }
 
-    public Tanswer(Long answerid) {
-        this.answerid = answerid;
-    }
-
     public Tanswer(String answerstring, boolean answercorrect) {
         this.answerstring = answerstring;
         this.answercorrect = answercorrect;

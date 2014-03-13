@@ -34,18 +34,47 @@ import ninja.params.PathParam;
 
 
 @Singleton
-public class ApiController extends BaseController {
+public class ApiUserController extends BaseController {
       
     @Inject
-    ApiController (Messages msg) {
+    ApiUserController (Messages msg) {
         this.msg = msg;
     }
 
     @Inject
     UserDao userDao;
     
-    @Inject
-    LoginLogoutController loginLogoutController;
+    
+    public Result postLogin(@Param("useremail") String useremail,
+                            @Param("password") String password,
+                            Context context) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+        
+        boolean isUserEmailAndPasswordValid = userDao.isUserAndPasswordValid(useremail, password); 
+        
+        if (isUserEmailAndPasswordValid){
+            String isAdmin;
+            isAdmin = String.valueOf(userDao.isUserAdmin(useremail));
+            context.getSession().put("useremail", useremail);
+            context.getSession().put("admin", isAdmin);
+            context.getFlashScope().success("login");
+             return Results.text().renderRaw(this.getMsg("login.loginSuccessful", context));
+        } else {
+            // something is wrong with the input or password not found.
+            context.getFlashScope().put("username", useremail);
+            context.getFlashScope().error("login"); 
+            return Results.text().renderRaw(this.getMsg("login.errorLogin", context));
+        }  
+    }
+
+    public Result getLogout(Context context) {
+
+        // remove any user dependent information
+        context.getSession().clear();
+        context.getFlashScope().success("logout");
+
+        return Results.text().renderRaw(this.getMsg("login.logoutSuccessful", context));
+
+    }
 
     public Result getUserByEmailJson(@PathParam("useremail") String useremail, Context context) {
         
@@ -75,13 +104,31 @@ public class ApiController extends BaseController {
         } else {
             user = (Tuser) userDao.postRegisterUser(useremail, username, userlastnames, userpassword, Boolean.parseBoolean(useradmin));
             if (user != null) {
-                loginLogoutController.postLogin(useremail, userpassword, context);
+                this.postLogin(useremail, userpassword, context);
                 context.getFlashScope().success("registersuccessful");
                 return Results.json().render(user);
             } else {
                 context.getFlashScope().error("registerfail");
                 return Results.text().renderRaw(this.getMsg("user.registerFail", context));
             }
+        }     
+
+    }
+    
+    public Result postUpdateUser(@Param("useremail") String useremail, 
+            @Param("username") String username,
+            @Param("userlastnames") String userlastnames,
+            @Param("userpassword") String userpassword,
+            Context context) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+      
+        Tuser user = (Tuser) userDao.postUpdateUser(useremail, username, userlastnames, userpassword);
+        
+        if (user != null) {
+            context.getFlashScope().error("userupdateok");
+            return Results.json().render(user);
+        } else {
+            context.getFlashScope().error("userupdatefail");
+            return Results.text().renderRaw(this.getMsg("user.userUpdateFail", context));
         }     
 
     }

@@ -68,7 +68,7 @@ public class UserDao {
     }
     
     @Transactional
-    public Tuser postRegisterUser(String useremail, String username, String userlastnames, String userpassword, Boolean useradmin) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {//throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+    public Tuser postRegisterUser(String useremail, String username, String userlastnames, String userpassword, Boolean useradmin) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
         
         Tuser user = getUserByEmail(useremail);
         
@@ -84,16 +84,23 @@ public class UserDao {
     }
     
     @Transactional
-    public Tuser postUpdateUser(String useremail, String username, String userlastnames, String userpassword, Boolean useradmin) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+    public Tuser postUpdateUser(String useremail, String username, String userlastnames, String userpassword) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
         
         Tuser user = getUserByEmail(useremail);
         
         if (user != null) {
             EntityManager entityManager = entityManagerProvider.get();
-            user.setUsername(username);
-            user.setUserlastname(userlastnames);
-            String hashPass = PasswordHash.createHash(userpassword);
-            user.setUserpassword(hashPass);
+            if (!username.isEmpty()) {
+                user.setUsername(username);
+            }
+            if (!userlastnames.isEmpty()){
+                user.setUserlastname(userlastnames);
+            }
+            if (!userpassword.isEmpty()){
+                String hashPass = PasswordHash.createHash(userpassword);
+                user.setUserpassword(hashPass);
+            }
+
             entityManager.persist(user);
         }
         

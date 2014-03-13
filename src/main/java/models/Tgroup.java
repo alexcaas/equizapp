@@ -7,10 +7,8 @@
 package models;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,7 +16,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -36,16 +33,17 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Tgroup.findByGroupcode", query = "SELECT t FROM Tgroup t WHERE t.groupcode = :groupcode"),
     @NamedQuery(name = "Tgroup.findByGroupname", query = "SELECT t FROM Tgroup t WHERE t.groupname = :groupname"),
     @NamedQuery(name = "Tgroup.findByGroupitemsnumber", query = "SELECT t FROM Tgroup t WHERE t.groupitemsnumber = :groupitemsnumber"),
-    @NamedQuery(name = "Tgroup.findByGroupdatecreation", query = "SELECT t FROM Tgroup t WHERE t.groupdatecreation = :groupdatecreation")})
+    @NamedQuery(name = "Tgroup.findByGroupdatecreation", query = "SELECT t FROM Tgroup t WHERE t.groupdatecreation = :groupdatecreation"),
+    @NamedQuery(name = "Tgroup.findByGroupcodestr", query = "SELECT t FROM Tgroup t WHERE t.groupcodestr = :groupcodestr")})
 public class Tgroup implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "groupcode")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer groupcode;
     @Basic(optional = false)
-    @Size(min = 1, max = 100)
+    @Size(min = 1, max = 254)
     @Column(name = "groupname")
     private String groupname;
     @Basic(optional = false)
@@ -55,16 +53,12 @@ public class Tgroup implements Serializable {
     @Column(name = "groupdatecreation")
     @Temporal(TemporalType.TIMESTAMP)
     private Date groupdatecreation;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "groupcode")
-    private Collection<Titem> titemCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tgroup")
-    private Collection<Tusergroup> tusergroupCollection;
+    @Basic(optional = true)
+    @Size(min = 1, max = 254)
+    @Column(name = "groupcodestr")
+    private String groupcodestr;
 
     public Tgroup() {
-    }
-
-    public Tgroup(Integer groupcode) {
-        this.groupcode = groupcode;
     }
 
     public Tgroup(String groupname, short groupitemsnumber, Date groupdatecreation) {
@@ -105,20 +99,12 @@ public class Tgroup implements Serializable {
         this.groupdatecreation = groupdatecreation;
     }
 
-    public Collection<Titem> getTitemCollection() {
-        return titemCollection;
+    public String getGroupcodestr() {
+        return groupcodestr;
     }
 
-    public void setTitemCollection(Collection<Titem> titemCollection) {
-        this.titemCollection = titemCollection;
-    }
-
-    public Collection<Tusergroup> getTusergroupCollection() {
-        return tusergroupCollection;
-    }
-
-    public void setTusergroupCollection(Collection<Tusergroup> tusergroupCollection) {
-        this.tusergroupCollection = tusergroupCollection;
+    public void setGroupcodestr(String groupcodestr) {
+        this.groupcodestr = groupcodestr;
     }
 
     @Override

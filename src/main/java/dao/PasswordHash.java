@@ -92,6 +92,44 @@ public class PasswordHash
         // format iterations:salt:hash
         return PBKDF2_ITERATIONS + ":" + toHex(salt) + ":" +  toHex(hash);
     }
+    
+    /**
+     * Returns a salted PBKDF2 hash of the group.
+     *
+     * @param   groupnumber    the groupnumber to hash
+     * @return              a salted PBKDF2 hash of the groupnumber
+     * @throws java.security.NoSuchAlgorithmException
+     * @throws java.security.spec.InvalidKeySpecException
+     * @throws java.security.NoSuchProviderException
+     */    
+    public static String createGroupHash(String groupnumber)
+        throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException
+    {
+        return createGroupHash(groupnumber.toCharArray());
+    }
+    
+    /**
+     * Returns a salted PBKDF2 hash of the group.
+     *
+     * @param   groupnumber    the groupnumber to hash
+     * @return              a salted PBKDF2 hash of the groupnumber
+     * @throws java.security.NoSuchAlgorithmException
+     * @throws java.security.spec.InvalidKeySpecException
+     * @throws java.security.NoSuchProviderException
+     */
+    public static String createGroupHash(char[] groupnumber)
+        throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException
+    {
+        // Generate a random salt
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[6];
+        random.nextBytes(salt);
+
+        // Hash the password
+        byte[] hash = pbkdf2(groupnumber, salt, 10, 4);
+        // 
+        return toHex(hash);
+    }
 
     /**
      * Validates a password using a hash.

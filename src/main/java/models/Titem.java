@@ -57,10 +57,6 @@ public class Titem implements Serializable {
     public Titem() {
     }
 
-    public Titem(Long itemid) {
-        this.itemid = itemid;
-    }
-
     public Titem(String itemstring, short itemdifficulty) {
         this.itemstring = itemstring;
         this.itemdifficulty = itemdifficulty;

@@ -17,12 +17,12 @@
 package conf;
 
 import com.google.inject.Inject;
+import controllers.ApiGroupController;
 
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.utils.NinjaProperties;
-import controllers.ApiController;
-import controllers.LoginLogoutController;
+import controllers.ApiUserController;
 
 public class Routes implements ApplicationRoutes {
     
@@ -45,15 +45,16 @@ public class Routes implements ApplicationRoutes {
         ///////////////////////////////////////////////////////////////////////
         // Api for management of software
         ///////////////////////////////////////////////////////////////////////
-        router.POST().route("/api/login").with(LoginLogoutController.class, "postLogin");
-        router.GET().route("/api/logout").with(LoginLogoutController.class, "getLogout");
-        router.POST().route("/api/registeruser").with(ApiController.class, "postRegisterUser");
         
+        /// USER API
+        router.POST().route("/api/login").with(ApiUserController.class, "postLogin");
+        router.GET().route("/api/logout").with(ApiUserController.class, "getLogout");
+        router.POST().route("/api/registeruser").with(ApiUserController.class, "postRegisterUser");
+        router.POST().route("/api/updateuser").with(ApiUserController.class, "postUpdateUser");    
+        router.GET().route("/api/{useremail}/user.json").with(ApiUserController.class, "getUserByEmailJson");
         
-        router.GET().route("/api/{useremail}/user.json").with(ApiController.class, "getUserByEmailJson");
-        //router.GET().route("/api/{username}/articles.xml").with(ApiController.class, "getArticlesXml");
-        //router.POST().route("/api/{username}/article.json").with(ApiController.class, "postArticleJson");
-        //router.POST().route("/api/{username}/article.xml").with(ApiController.class, "postArticleXml");
+        router.POST().route("/api/newgroup").with(ApiGroupController.class, "postNewGroup");
+
  
         ///////////////////////////////////////////////////////////////////////
         // Assets (pictures / javascript)
@@ -63,7 +64,7 @@ public class Routes implements ApplicationRoutes {
         ///////////////////////////////////////////////////////////////////////
         // Index / Catchall shows index page
         ///////////////////////////////////////////////////////////////////////
-        //router.GET().route("/.*").with(ApiController.class, "index");
+        //router.GET().route("/.*").with(ApiUserController.class, "index");
     }
 
 }
