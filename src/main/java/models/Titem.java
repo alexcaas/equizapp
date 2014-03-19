@@ -6,12 +6,16 @@
 
 package models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,6 +25,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 
 /**
@@ -33,13 +39,15 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Titem.findAll", query = "SELECT t FROM Titem t"),
     @NamedQuery(name = "Titem.findByItemid", query = "SELECT t FROM Titem t WHERE t.itemid = :itemid"),
     @NamedQuery(name = "Titem.findByItemstring", query = "SELECT t FROM Titem t WHERE t.itemstring = :itemstring"),
-    @NamedQuery(name = "Titem.findByItemdifficulty", query = "SELECT t FROM Titem t WHERE t.itemdifficulty = :itemdifficulty")})
+    @NamedQuery(name = "Titem.findByItemdifficulty", query = "SELECT t FROM Titem t WHERE t.itemdifficulty = :itemdifficulty"),
+    @NamedQuery(name = "Titem.findByItemlastmodif", query = "SELECT t FROM Titem t WHERE t.itemlastmodif = :itemlastmodif"),
+    @NamedQuery(name = "Titem.findByGroupcode", query = "SELECT t FROM Titem t WHERE t.groupcode = :groupcode")})
 public class Titem implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "itemid")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long itemid;
     @Basic(optional = false)
     @Size(min = 1, max = 2147483647)
@@ -48,18 +56,24 @@ public class Titem implements Serializable {
     @Basic(optional = false)
     @Column(name = "itemdifficulty")
     private short itemdifficulty;
+    @Column(name = "itemlastmodif")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date itemlastmodif;
     @JoinColumn(name = "groupcode", referencedColumnName = "groupcode")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch=FetchType.EAGER)
+    @JsonBackReference
     private Tgroup groupcode;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "itemid")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "itemid", fetch=FetchType.EAGER)
+    @JsonManagedReference
     private Collection<Tanswer> tanswerCollection;
 
     public Titem() {
     }
 
-    public Titem(String itemstring, short itemdifficulty) {
+    public Titem(String itemstring, short itemdifficulty , Tgroup group) {
         this.itemstring = itemstring;
         this.itemdifficulty = itemdifficulty;
+        this.groupcode = group;
     }
 
     public Long getItemid() {
@@ -84,6 +98,14 @@ public class Titem implements Serializable {
 
     public void setItemdifficulty(short itemdifficulty) {
         this.itemdifficulty = itemdifficulty;
+    }
+
+    public Date getItemlastmodif() {
+        return itemlastmodif;
+    }
+
+    public void setItemlastmodif(Date itemlastmodif) {
+        this.itemlastmodif = itemlastmodif;
     }
 
     public Tgroup getGroupcode() {

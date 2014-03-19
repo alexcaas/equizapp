@@ -6,20 +6,26 @@
 
 package models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -34,7 +40,8 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Tgroup.findByGroupname", query = "SELECT t FROM Tgroup t WHERE t.groupname = :groupname"),
     @NamedQuery(name = "Tgroup.findByGroupitemsnumber", query = "SELECT t FROM Tgroup t WHERE t.groupitemsnumber = :groupitemsnumber"),
     @NamedQuery(name = "Tgroup.findByGroupdatecreation", query = "SELECT t FROM Tgroup t WHERE t.groupdatecreation = :groupdatecreation"),
-    @NamedQuery(name = "Tgroup.findByGroupcodestr", query = "SELECT t FROM Tgroup t WHERE t.groupcodestr = :groupcodestr")})
+    @NamedQuery(name = "Tgroup.findByGroupcodestr", query = "SELECT t FROM Tgroup t WHERE t.groupcodestr = :groupcodestr"),
+    @NamedQuery(name = "Tgroup.findByGrouplastmodif", query = "SELECT t FROM Tgroup t WHERE t.grouplastmodif = :grouplastmodif")})
 public class Tgroup implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -53,18 +60,28 @@ public class Tgroup implements Serializable {
     @Column(name = "groupdatecreation")
     @Temporal(TemporalType.TIMESTAMP)
     private Date groupdatecreation;
-    @Basic(optional = true)
-    @Size(min = 1, max = 254)
+    @Size(max = 254)
     @Column(name = "groupcodestr")
     private String groupcodestr;
+    @Column(name = "grouplastmodif")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date grouplastmodif;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "groupcode", fetch=FetchType.EAGER)
+    @JsonManagedReference
+    @JsonIgnore
+    private Collection<Titem> titemCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tgroup", fetch=FetchType.EAGER)
+    @JsonBackReference
+    private Collection<Tusergroup> tusergroupCollection;
 
     public Tgroup() {
     }
 
-    public Tgroup(String groupname, short groupitemsnumber, Date groupdatecreation) {
+    public Tgroup(String groupname, short groupitemsnumber, Date groupdatecreation, Date grouplastmodif) {
         this.groupname = groupname;
         this.groupitemsnumber = groupitemsnumber;
         this.groupdatecreation = groupdatecreation;
+        this.grouplastmodif = grouplastmodif;
     }
 
     public Integer getGroupcode() {
@@ -105,6 +122,30 @@ public class Tgroup implements Serializable {
 
     public void setGroupcodestr(String groupcodestr) {
         this.groupcodestr = groupcodestr;
+    }
+
+    public Date getGrouplastmodif() {
+        return grouplastmodif;
+    }
+
+    public void setGrouplastmodif(Date grouplastmodif) {
+        this.grouplastmodif = grouplastmodif;
+    }
+
+    public Collection<Titem> getTitemCollection() {
+        return titemCollection;
+    }
+
+    public void setTitemCollection(Collection<Titem> titemCollection) {
+        this.titemCollection = titemCollection;
+    }
+
+    public Collection<Tusergroup> getTusergroupCollection() {
+        return tusergroupCollection;
+    }
+
+    public void setTusergroupCollection(Collection<Tusergroup> tusergroupCollection) {
+        this.tusergroupCollection = tusergroupCollection;
     }
 
     @Override

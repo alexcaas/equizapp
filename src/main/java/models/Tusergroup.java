@@ -6,11 +6,15 @@
 
 package models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -30,7 +34,8 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Tusergroup.findByGroupcode", query = "SELECT t FROM Tusergroup t WHERE t.tusergroupPK.groupcode = :groupcode"),
     @NamedQuery(name = "Tusergroup.findByUsertreat", query = "SELECT t FROM Tusergroup t WHERE t.usertreat = :usertreat"),
     @NamedQuery(name = "Tusergroup.findByDatetestdone", query = "SELECT t FROM Tusergroup t WHERE t.datetestdone = :datetestdone"),
-    @NamedQuery(name = "Tusergroup.findByUserid", query = "SELECT t FROM Tusergroup t WHERE t.tusergroupPK.userid = :userid")})
+    @NamedQuery(name = "Tusergroup.findByUserid", query = "SELECT t FROM Tusergroup t WHERE t.tusergroupPK.userid = :userid"),
+    @NamedQuery(name = "Tusergroup.findByUsertreatlastmodif", query = "SELECT t FROM Tusergroup t WHERE t.usertreatlastmodif = :usertreatlastmodif")})
 public class Tusergroup implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
@@ -40,11 +45,16 @@ public class Tusergroup implements Serializable {
     @Column(name = "datetestdone")
     @Temporal(TemporalType.TIMESTAMP)
     private Date datetestdone;
+    @Column(name = "usertreatlastmodif")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date usertreatlastmodif;
     @JoinColumn(name = "userid", referencedColumnName = "userid", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch=FetchType.EAGER)
+    @JsonBackReference
     private Tuser tuser;
     @JoinColumn(name = "groupcode", referencedColumnName = "groupcode", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch=FetchType.EAGER)
+    @JsonManagedReference
     private Tgroup tgroup;
 
     public Tusergroup() {
@@ -80,6 +90,14 @@ public class Tusergroup implements Serializable {
 
     public void setDatetestdone(Date datetestdone) {
         this.datetestdone = datetestdone;
+    }
+
+    public Date getUsertreatlastmodif() {
+        return usertreatlastmodif;
+    }
+
+    public void setUsertreatlastmodif(Date usertreatlastmodif) {
+        this.usertreatlastmodif = usertreatlastmodif;
     }
 
     public Tuser getTuser() {

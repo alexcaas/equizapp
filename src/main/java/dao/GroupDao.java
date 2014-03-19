@@ -1,10 +1,8 @@
 package dao;
 
+import util.PasswordHash;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
 import models.Tgroup;
-
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
@@ -13,16 +11,30 @@ import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
+import ninja.utils.LoggerProvider;
 
 public class GroupDao {
     
     @Inject
     Provider<EntityManager> entityManagerProvider;
+    @Inject
+    LoggerProvider logger;
+    @Inject
+    UserDao userDao;
     
     public String hashGroupCode(Integer groupcode) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+        
+        String hashGroupCode = null;
+                
+        try {
             
-        String hashGroupCode = PasswordHash.createGroupHash(String.valueOf(groupcode));
+            hashGroupCode = PasswordHash.createGroupHash(String.valueOf(groupcode));
+        
+        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException e) {
+            logger.get().info(this.toString() + " -- Error calculating hash group code!!");
+        }
 
         return hashGroupCode.toUpperCase();
     }
@@ -31,61 +43,69 @@ public class GroupDao {
     public Tgroup getGroupByGroupCode(Integer groupcode) {
         
         EntityManager entityManager = entityManagerProvider.get();
-        Tgroup group;
+        Tgroup group = null;
         try{
             TypedQuery q = entityManager.createNamedQuery("Tgroup.findByGroupcode", Tgroup.class);
             group = (Tgroup) q.setParameter("groupcode", groupcode).getSingleResult();
         } catch (NoResultException e) {
-            group = null;
+            logger.get().info(this.toString() + " No group found!!");
         }
 
         return group;
     }
     
+    @Transactional
     public Tgroup getGroupByHashedGroupCode(String groupcodestr) {
-        
+
         EntityManager entityManager = entityManagerProvider.get();
-        Tgroup group;
+        Tgroup group = null;
         try{
             TypedQuery q = entityManager.createNamedQuery("Tgroup.findByGroupcodestr", Tgroup.class);
             group = (Tgroup) q.setParameter("groupcodestr", groupcodestr).getSingleResult();
         } catch (NoResultException e) {
-            group = null;
+            logger.get().info(this.toString() + " No group found!!");
         }
-
         return group;
     }
     
     @Transactional
-    public Tgroup postNewGroup(String groupname, Short groupitemsnumber, Date groupdatecreation) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+    public Tgroup postNewGroup(String groupname, Short groupitemsnumber) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
         
         EntityManager entityManager = entityManagerProvider.get();
+        Tgroup group = null;
+                
+        try {
+
+            Date date = new Date();
+            group = new Tgroup(groupname, groupitemsnumber, date, date);
+            String groupcodestr = this.hashGroupCode(group.getGroupcode());         
+            group.setGroupcodestr(groupcodestr);        
+            entityManager.persist(group);
         
-        Tgroup group = new Tgroup(groupname, groupitemsnumber, groupdatecreation);
-        entityManager.persist(group);
-        
-        String groupcodestr = this.hashGroupCode(group.getGroupcode());
-        
-        group.setGroupcodestr(groupcodestr);
-        entityManager.persist(group);
+        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException | PersistenceException e) {
+            logger.get().info(this.toString() + " -- " + groupname + " -- New group failed!!");
+        }
         
         return group;      
         
     }
     
     @Transactional
-    public Tgroup postDeleteGroup(Integer groupcode) {
+    public Boolean deleteGroup(String groupcodestr) {
         
         EntityManager entityManager = entityManagerProvider.get();
+        Boolean ok = false;
         
-        Tgroup group = (Tgroup)getGroupByGroupCode(groupcode);
-        try{ 
+        try{
+            
+            Tgroup group = (Tgroup)getGroupByHashedGroupCode(groupcodestr); 
             entityManager.remove(group);
-        } catch (NoResultException e) {
-            group = null;
+            ok = true;
+        } catch (PersistenceException e) {
+            logger.get().info(this.toString() + " -- " + groupcodestr + " -- Delete group failed!!");
         }
         
-        return group;      
+        return ok;      
         
     }
 

@@ -18,12 +18,11 @@ package controllers;
 
 import ninja.Result;
 import ninja.Results;
-
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
 import models.Tuser;
 import dao.UserDao;
+import dao.UsergroupDao;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
@@ -43,9 +42,11 @@ public class ApiUserController extends BaseController {
 
     @Inject
     UserDao userDao;
+    @Inject
+    UsergroupDao userGroupDao;
     
     
-    public Result postLogin(@Param("useremail") String useremail,
+    public Result postLoginJson(@Param("useremail") String useremail,
                             @Param("password") String password,
                             Context context) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
         
@@ -53,26 +54,26 @@ public class ApiUserController extends BaseController {
         
         if (isUserEmailAndPasswordValid){
             String isAdmin;
-            isAdmin = String.valueOf(userDao.isUserAdmin(useremail));
+            Tuser user = (Tuser) userDao.getUserByEmail(useremail);
+            isAdmin = String.valueOf(user.getUseradmin());
             context.getSession().put("useremail", useremail);
             context.getSession().put("admin", isAdmin);
-            context.getFlashScope().success("login");
-             return Results.text().renderRaw(this.getMsg("login.loginSuccessful", context));
+            context.getFlashScope().success("postloginok");
+            user.setUserpassword(""); // No password sent to client
+            return Results.json().render(user);
         } else {
-            // something is wrong with the input or password not found.
             context.getFlashScope().put("username", useremail);
-            context.getFlashScope().error("login"); 
-            return Results.text().renderRaw(this.getMsg("login.errorLogin", context));
+            context.getFlashScope().error("postloginfail"); 
+            return Results.text().renderRaw(this.getMsg("login.postLoginFail", context));
         }  
     }
 
     public Result getLogout(Context context) {
 
-        // remove any user dependent information
         context.getSession().clear();
-        context.getFlashScope().success("logout");
+        context.getFlashScope().success("getlogoutok");
 
-        return Results.text().renderRaw(this.getMsg("login.logoutSuccessful", context));
+        return Results.text().renderRaw(this.getMsg("login.getLogoutOk", context));
 
     }
 
@@ -81,15 +82,16 @@ public class ApiUserController extends BaseController {
         Tuser user = (Tuser) userDao.getUserByEmail(useremail);
         
         if (user == null) {
-            context.getFlashScope().error("gettingUser");
-            return Results.text().renderRaw(this.getMsg("user.errorgettinguser", context));
+            context.getFlashScope().error("getuserbyemailjsonfail");
+            return Results.text().renderRaw(this.getMsg("user.getUserByEmailJsonFail", context));
         } else {
-             return Results.json().render(user);            
+            user.setUserpassword(""); // No password sent to client
+            return Results.json().render(user);            
         }     
 
     }
     
-    public Result postRegisterUser(@Param("useremail") String useremail, 
+    public Result postRegisterUserJson(@Param("useremail") String useremail, 
             @Param("username") String username,
             @Param("userlastnames") String userlastnames,
             @Param("userpassword") String userpassword,
@@ -99,23 +101,24 @@ public class ApiUserController extends BaseController {
         Tuser user = (Tuser) userDao.getUserByEmail(useremail);
         
         if (user != null) {
-            context.getFlashScope().error("userAlreadyExists");
-            return Results.text().renderRaw(this.getMsg("user.useralreadyexists", context));
+            context.getFlashScope().error("postregisteruseralreadyexists");
+            return Results.text().renderRaw(this.getMsg("user.postRegisterUserAlreadyExists", context));
         } else {
             user = (Tuser) userDao.postRegisterUser(useremail, username, userlastnames, userpassword, Boolean.parseBoolean(useradmin));
             if (user != null) {
-                this.postLogin(useremail, userpassword, context);
-                context.getFlashScope().success("registersuccessful");
+                this.postLoginJson(useremail, userpassword, context);
+                user.setUserpassword(""); // No password sent to client
+                context.getFlashScope().success("postregisteruserok");
                 return Results.json().render(user);
             } else {
-                context.getFlashScope().error("registerfail");
-                return Results.text().renderRaw(this.getMsg("user.registerFail", context));
+                context.getFlashScope().error("postregisteruserfail");
+                return Results.text().renderRaw(this.getMsg("user.postRegisterUserFail", context));
             }
         }     
 
     }
     
-    public Result postUpdateUser(@Param("useremail") String useremail, 
+    public Result postUpdateUserJson(@Param("useremail") String useremail, 
             @Param("username") String username,
             @Param("userlastnames") String userlastnames,
             @Param("userpassword") String userpassword,
@@ -124,11 +127,12 @@ public class ApiUserController extends BaseController {
         Tuser user = (Tuser) userDao.postUpdateUser(useremail, username, userlastnames, userpassword);
         
         if (user != null) {
-            context.getFlashScope().error("userupdateok");
+            user.setUserpassword(""); // No password sent to client
+            context.getFlashScope().error("postupdateuserok");
             return Results.json().render(user);
         } else {
-            context.getFlashScope().error("userupdatefail");
-            return Results.text().renderRaw(this.getMsg("user.userUpdateFail", context));
+            context.getFlashScope().error("postupdateuserfail");
+            return Results.text().renderRaw(this.getMsg("user.postUpdateUserFail", context));
         }     
 
     }

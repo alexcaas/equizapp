@@ -6,12 +6,17 @@
 
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +24,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;;
 import javax.validation.constraints.Size;
 
 /**
@@ -34,14 +41,10 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Tuser.findByUserlastname", query = "SELECT t FROM Tuser t WHERE t.userlastname = :userlastname"),
     @NamedQuery(name = "Tuser.findByUserpassword", query = "SELECT t FROM Tuser t WHERE t.userpassword = :userpassword"),
     @NamedQuery(name = "Tuser.findByUseradmin", query = "SELECT t FROM Tuser t WHERE t.useradmin = :useradmin"),
-    @NamedQuery(name = "Tuser.findByUserid", query = "SELECT t FROM Tuser t WHERE t.userid = :userid")})
+    @NamedQuery(name = "Tuser.findByUserid", query = "SELECT t FROM Tuser t WHERE t.userid = :userid"),
+    @NamedQuery(name = "Tuser.findByUserlastmodif", query = "SELECT t FROM Tuser t WHERE t.userlastmodif = :userlastmodif")})
 public class Tuser implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @Column(name = "userid")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long userid;
     @Basic(optional = false)
     @Size(min = 1, max = 254)
     @Column(name = "useremail")
@@ -61,14 +64,19 @@ public class Tuser implements Serializable {
     @Basic(optional = false)
     @Column(name = "useradmin")
     private boolean useradmin;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tuser")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "userid")
+    private Long userid;
+    @Column(name = "userlastmodif")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date userlastmodif;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tuser", fetch=FetchType.EAGER)
+    @JsonManagedReference
     private Collection<Tusergroup> tusergroupCollection;
 
     public Tuser() {
-    }
-
-    public Tuser(Long userid) {
-        this.userid = userid;
     }
 
     public Tuser(String useremail, String username, String userlastname, String userpassword, boolean useradmin) {
@@ -125,6 +133,14 @@ public class Tuser implements Serializable {
 
     public void setUserid(Long userid) {
         this.userid = userid;
+    }
+
+    public Date getUserlastmodif() {
+        return userlastmodif;
+    }
+
+    public void setUserlastmodif(Date userlastmodif) {
+        this.userlastmodif = userlastmodif;
     }
 
     public Collection<Tusergroup> getTusergroupCollection() {

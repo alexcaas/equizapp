@@ -6,10 +6,12 @@
 
 package models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,13 +32,14 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Tanswer.findAll", query = "SELECT t FROM Tanswer t"),
     @NamedQuery(name = "Tanswer.findByAnswerid", query = "SELECT t FROM Tanswer t WHERE t.answerid = :answerid"),
     @NamedQuery(name = "Tanswer.findByAnswerstring", query = "SELECT t FROM Tanswer t WHERE t.answerstring = :answerstring"),
-    @NamedQuery(name = "Tanswer.findByAnswercorrect", query = "SELECT t FROM Tanswer t WHERE t.answercorrect = :answercorrect")})
+    @NamedQuery(name = "Tanswer.findByAnswercorrect", query = "SELECT t FROM Tanswer t WHERE t.answercorrect = :answercorrect"),
+    @NamedQuery(name = "Tanswer.findByItemid", query = "SELECT t FROM Tanswer t WHERE t.itemid = :itemid")})
 public class Tanswer implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "answerid")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long answerid;
     @Basic(optional = false)
     @Size(min = 1, max = 2147483647)
@@ -46,13 +49,15 @@ public class Tanswer implements Serializable {
     @Column(name = "answercorrect")
     private boolean answercorrect;
     @JoinColumn(name = "itemid", referencedColumnName = "itemid")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch=FetchType.EAGER)
+    @JsonBackReference
     private Titem itemid;
 
     public Tanswer() {
     }
 
-    public Tanswer(String answerstring, boolean answercorrect) {
+    public Tanswer(Titem itemid, String answerstring, boolean answercorrect) {
+        this.itemid = itemid;
         this.answerstring = answerstring;
         this.answercorrect = answercorrect;
     }

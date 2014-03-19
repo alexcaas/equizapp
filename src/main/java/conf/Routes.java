@@ -18,11 +18,12 @@ package conf;
 
 import com.google.inject.Inject;
 import controllers.ApiGroupController;
-
+import controllers.ApiItemController;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.utils.NinjaProperties;
 import controllers.ApiUserController;
+import controllers.ApiUserGroupController;
 
 public class Routes implements ApplicationRoutes {
     
@@ -47,13 +48,26 @@ public class Routes implements ApplicationRoutes {
         ///////////////////////////////////////////////////////////////////////
         
         /// USER API
-        router.POST().route("/api/login").with(ApiUserController.class, "postLogin");
+        router.POST().route("/api/login").with(ApiUserController.class, "postLoginJson");
         router.GET().route("/api/logout").with(ApiUserController.class, "getLogout");
-        router.POST().route("/api/registeruser").with(ApiUserController.class, "postRegisterUser");
-        router.POST().route("/api/updateuser").with(ApiUserController.class, "postUpdateUser");    
-        router.GET().route("/api/{useremail}/user.json").with(ApiUserController.class, "getUserByEmailJson");
+        router.GET().route("/api/{useremail}/user").with(ApiUserController.class, "getUserByEmailJson");
+        router.POST().route("/api/registeruser").with(ApiUserController.class, "postRegisterUserJson");
+        router.POST().route("/api/updateuser").with(ApiUserController.class, "postUpdateUserJson");    
         
-        router.POST().route("/api/newgroup").with(ApiGroupController.class, "postNewGroup");
+        
+        /// GROUP API
+        router.POST().route("/api/newgroup").with(ApiGroupController.class, "postNewGroupJson");
+        router.DELETE().route("/api/deletegroup/{codestr}").with(ApiGroupController.class, "deleteGroup");
+        
+        /// USERGROUP API
+        router.POST().route("/api/joingroup").with(ApiUserGroupController.class, "postJoinGroupJson");
+        
+        /// ITEM API
+        router.POST().route("/api/newitem").with(ApiItemController.class, "postNewItemAndAnswersJson");
+        router.POST().route("/api/updateitem").with(ApiItemController.class, "postUpdateItemAndAnswersJson");
+        router.DELETE().route("/api/deleteitem/{itemid}").with(ApiItemController.class, "deleteItem");
+        
+        /// SYNC API
 
  
         ///////////////////////////////////////////////////////////////////////

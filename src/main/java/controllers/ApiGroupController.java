@@ -18,18 +18,14 @@ package controllers;
 
 import ninja.Result;
 import ninja.Results;
-
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
 import models.Tgroup;
 import dao.GroupDao;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import ninja.Context;
 import ninja.i18n.Messages;
 import ninja.params.Param;
@@ -48,26 +44,37 @@ public class ApiGroupController extends BaseController {
     GroupDao groupDao;
     
     
-    public Result postNewGroup(@Param("groupname") String groupname,
+    public Result postNewGroupJson(@Param("groupname") String groupname,
                             @Param("groupitemsnumber") String groupitemsnumber,
-                            @Param("groupdatecreation") String groupdatecreation,
                             Context context) throws ParseException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
         
-        System.out.print("AAAAAAAAA -> " + groupname + "  " + groupitemsnumber + "  " + groupdatecreation);
         Short grpItemsNumber = Short.parseShort(groupitemsnumber);
-        SimpleDateFormat textFormat = new SimpleDateFormat("dd.MM.yyyy");
-        Date dateCreation;
-        dateCreation = textFormat.parse(groupdatecreation);
         
-        Tgroup group = groupDao.postNewGroup(groupname, grpItemsNumber, dateCreation);
+        Tgroup group = groupDao.postNewGroup(groupname, grpItemsNumber);
         
-        return Results.json().render(group);
+        if (group != null) {
+                context.getFlashScope().success("postnewgroupok");
+                return Results.json().render(group);
+            } else {
+                context.getFlashScope().error("postnewgroupfail");
+                return Results.text().renderRaw(this.getMsg("group.postNewGroupFail", context));
+            }
     }
     
-    public Result postDeleteGroup(@Param("") String zzzz,
+    public Result deleteGroup(@PathParam("codestr") String groupcodestr,
                             Context context) {
         
-        return Results.text().renderRaw("");
+        Boolean ok = groupDao.deleteGroup(groupcodestr);
+        
+        if (ok) {
+            context.getFlashScope().success("deletegroupok");
+            return Results.text().renderRaw(this.getMsg("group.deleteGroupOk", context));
+        } else {
+            context.getFlashScope().success("deletegroupfail");
+            return Results.text().renderRaw(this.getMsg("group.deleteGroupFail", context));
+        }
+        
+        
     }
     
 }
