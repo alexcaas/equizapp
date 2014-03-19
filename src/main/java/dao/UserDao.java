@@ -43,23 +43,6 @@ public class UserDao {
         return user;
     }
     
-//    @Transactional
-//    public Boolean isUserAdmin(String useremail) {
-//        
-//        EntityManager entityManager = entityManagerProvider.get();
-//        Tuser user;
-//        Boolean isAdmin = false;
-//        try{
-//            TypedQuery q = entityManager.createNamedQuery("Tuser.findByUseremail", Tuser.class);
-//            user = (Tuser) q.setParameter("useremail", useremail).getSingleResult();
-//            isAdmin = user.getUseradmin();
-//        } catch (NoResultException e) {
-//            logger.get().info(this.toString() + " No user found!!");
-//        }
-//
-//        return isAdmin;
-//    }
-    
     @Transactional
     public Boolean isUserAndPasswordValid(String useremail, String password) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
         

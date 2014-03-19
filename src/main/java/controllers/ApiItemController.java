@@ -20,7 +20,6 @@ import ninja.Result;
 import ninja.Results;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import dao.AnswerDao;
 import dao.GroupDao;
 import dao.ItemDao;
 import java.util.ArrayList;
@@ -58,7 +57,7 @@ public class ApiItemController extends BaseController {
                             @Param("answercorrect3") String answercorrect3,
                             Context context) {
         
-        //try {
+        try {
             
             Short itemdifficultysi = Short.parseShort(itemdifficulty);
             Boolean answercorrect1bool = Boolean.parseBoolean(answercorrect1);
@@ -83,10 +82,10 @@ public class ApiItemController extends BaseController {
             context.getFlashScope().success("postnewitemandanswersok");
             return Results.json().render(item);
                 
-           //} catch (NullPointerException e) {
-           //    context.getFlashScope().error("postnewitemandanswersfail");
-           //    return Results.text().renderRaw(this.getMsg("item.postNewItemAndAnswersFail", context));
-        //}
+           } catch (NullPointerException e) {
+               context.getFlashScope().error("postnewitemandanswersfail");
+               return Results.text().renderRaw(this.getMsg("item.postNewItemAndAnswersFail", context));
+        }
         
     }
     

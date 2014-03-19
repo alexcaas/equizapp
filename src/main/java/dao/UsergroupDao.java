@@ -73,34 +73,5 @@ public Tusergroup joinGroup(String useremail, String groupcodestr){
 
         return usergroupCollection;
     }
-//
-//    @Transactional
-//    public Collection <Tgroup> getGroupsByUser(Tuser user) {
-//        
-//        EntityManager entityManager = entityManagerProvider.get();
-//        Collection <Tgroup> groups = null;
-//
-//        //try{
-//            TypedQuery q = entityManager.createNamedQuery("Tusergroup.findByUserid", Tusergroup.class);
-//            List <Tusergroup> usergroups;
-//            usergroups = q.setParameter("userid", user.getUserid()).getResultList();
-//            
-//            logger.get().info("AAAAAAAAA" + usergroups.get(0).getTgroup());
-//            
-//            
-//
-//            for (Tusergroup usergroup : usergroups) {
-//
-//                groups.add(usergroup.getTgroup());
-//            }
-//            
-//            
-// 
-//        //} catch (NoResultException e) {
-//            logger.get().info(this.toString() + " No groups found!!");
-//        //}
-//
-//        return groups;
-//    }
 
 }

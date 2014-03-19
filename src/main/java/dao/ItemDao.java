@@ -19,8 +19,6 @@ public class ItemDao {
     @Inject
     LoggerProvider logger;
     @Inject
-    AnswerDao answerDao;
-    @Inject
     GroupDao groupDao;
     
     
@@ -39,24 +37,6 @@ public class ItemDao {
 
         return item;
     }
-    
-//    @Transactional
-//    public Collection<Titem> getItemsByGroupCode(Integer groupcode) {
-//        
-//        Collection <Titem> items= null;
-//        try{
-//            EntityManager entityManager = entityManagerProvider.get();
-//            TypedQuery q = entityManager.createNamedQuery("Titem.findByGroupcode", Titem.class);
-//            items = (List) q.setParameter("groupcode", groupcode).getResultList();
-//            for (Titem item : items) {
-//                item.setTanswerCollection(answerDao.getAnswersByItemId(item.getItemid()));
-//            }
-//        } catch (NoResultException e) {
-//            logger.get().info(this.toString() + " No items found!!");
-//        }
-//
-//        return items;
-//    }
     
     @Transactional
     public Titem postNewItem(Titem item) {
@@ -94,29 +74,6 @@ public class ItemDao {
         return item;      
         
     }
-    
-//    @Transactional
-//    public Titem postUpdateItem(Long itemid, String itemstring, short itemdifficulty) {
-//        
-//        EntityManager entityManager = entityManagerProvider.get();
-//        Titem item = null;
-//                
-//        try {
-//            
-//            item = this.getItemById(itemid);       
-//            item.setItemstring(itemstring);
-//            item.setItemdifficulty(itemdifficulty);  
-//            Date lastmodif = new Date();
-//            item.setItemlastmodif(lastmodif);  
-//            entityManager.persist(item);
-//        
-//        } catch (PersistenceException e) {
-//            logger.get().info(this.toString() + " -- " + itemstring + " -- Update item failed!!");
-//        }
-//        
-//        return item;      
-//        
-//    }
     
     @Transactional
     public Boolean deleteItem(Long itemid) {
