@@ -55,6 +55,7 @@ public class Tusergroup implements Serializable {
     @JoinColumn(name = "groupcode", referencedColumnName = "groupcode", insertable = false, updatable = false)
     @ManyToOne(optional = false, fetch=FetchType.EAGER)
     @JsonManagedReference
+    @JsonIgnore
     private Tgroup tgroup;
 
     public Tusergroup() {

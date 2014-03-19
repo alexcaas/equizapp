@@ -56,6 +56,7 @@ public class Routes implements ApplicationRoutes {
         
         
         /// GROUP API
+        router.GET().route("/api/{groupcode}/group").with(ApiGroupController.class, "getGroupByHashedGroupCode");
         router.POST().route("/api/newgroup").with(ApiGroupController.class, "postNewGroupJson");
         router.DELETE().route("/api/deletegroup/{codestr}").with(ApiGroupController.class, "deleteGroup");
         

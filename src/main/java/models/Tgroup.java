@@ -68,7 +68,6 @@ public class Tgroup implements Serializable {
     private Date grouplastmodif;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "groupcode", fetch=FetchType.EAGER)
     @JsonManagedReference
-    @JsonIgnore
     private Collection<Titem> titemCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tgroup", fetch=FetchType.EAGER)
     @JsonBackReference

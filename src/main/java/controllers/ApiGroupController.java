@@ -44,6 +44,19 @@ public class ApiGroupController extends BaseController {
     GroupDao groupDao;
     
     
+    public Result getGroupByHashedGroupCode(@PathParam("groupcode") String groupcode, Context context) {
+        
+        Tgroup group = (Tgroup) groupDao.getGroupByHashedGroupCode(groupcode);
+        
+        if (group == null) {
+            context.getFlashScope().error("getgroupbyhashedgroupcodefail");
+            return Results.text().renderRaw(this.getMsg("group.getGroupByHashedGroupCodeFail", context));
+        } else {
+            return Results.json().render(group);            
+        }     
+
+    }
+    
     public Result postNewGroupJson(@Param("groupname") String groupname,
                             @Param("groupitemsnumber") String groupitemsnumber,
                             Context context) throws ParseException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
