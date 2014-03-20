@@ -27,6 +27,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 /**
@@ -43,6 +44,10 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Titem.findByItemlastmodif", query = "SELECT t FROM Titem t WHERE t.itemlastmodif = :itemlastmodif"),
     @NamedQuery(name = "Titem.findByGroupcode", query = "SELECT t FROM Titem t WHERE t.groupcode = :groupcode")})
 public class Titem implements Serializable {
+    
+    @Transient
+    private Boolean changes;
+    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,14 +71,17 @@ public class Titem implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "itemid", fetch=FetchType.EAGER)
     @JsonManagedReference
     private Collection<Tanswer> tanswerCollection;
+    
 
     public Titem() {
+        this.changes = false;
     }
 
     public Titem(String itemstring, short itemdifficulty , Tgroup group) {
         this.itemstring = itemstring;
         this.itemdifficulty = itemdifficulty;
         this.groupcode = group;
+        this.changes = false;
     }
 
     public Long getItemid() {
@@ -122,6 +130,14 @@ public class Titem implements Serializable {
 
     public void setTanswerCollection(Collection<Tanswer> tanswerCollection) {
         this.tanswerCollection = tanswerCollection;
+    }
+    
+    public Boolean isChanges() {
+        return changes;
+    }
+
+    public void setChanges(Boolean changes) {
+        this.changes = changes;
     }
 
     @Override

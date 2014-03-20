@@ -7,7 +7,6 @@
 package models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.Collection;
@@ -26,6 +25,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 /**
@@ -43,6 +43,10 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Tgroup.findByGroupcodestr", query = "SELECT t FROM Tgroup t WHERE t.groupcodestr = :groupcodestr"),
     @NamedQuery(name = "Tgroup.findByGrouplastmodif", query = "SELECT t FROM Tgroup t WHERE t.grouplastmodif = :grouplastmodif")})
 public class Tgroup implements Serializable {
+    
+    @Transient
+    private Boolean changes;
+    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,8 +76,10 @@ public class Tgroup implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tgroup", fetch=FetchType.EAGER)
     @JsonBackReference
     private Collection<Tusergroup> tusergroupCollection;
+    
 
     public Tgroup() {
+        this.changes = false;
     }
 
     public Tgroup(String groupname, short groupitemsnumber, Date groupdatecreation, Date grouplastmodif) {
@@ -81,6 +87,7 @@ public class Tgroup implements Serializable {
         this.groupitemsnumber = groupitemsnumber;
         this.groupdatecreation = groupdatecreation;
         this.grouplastmodif = grouplastmodif;
+        this.changes = false;
     }
 
     public Integer getGroupcode() {
@@ -145,6 +152,14 @@ public class Tgroup implements Serializable {
 
     public void setTusergroupCollection(Collection<Tusergroup> tusergroupCollection) {
         this.tusergroupCollection = tusergroupCollection;
+    }
+    
+    public Boolean isChanges() {
+        return changes;
+    }
+
+    public void setChanges(Boolean changes) {
+        this.changes = changes;
     }
 
     @Override

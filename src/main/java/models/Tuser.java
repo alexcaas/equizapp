@@ -6,9 +6,7 @@
 
 package models;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonManagedReference;;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -25,7 +23,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.persistence.TemporalType;;
+import javax.persistence.TemporalType;import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 /**
@@ -44,6 +42,10 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Tuser.findByUserid", query = "SELECT t FROM Tuser t WHERE t.userid = :userid"),
     @NamedQuery(name = "Tuser.findByUserlastmodif", query = "SELECT t FROM Tuser t WHERE t.userlastmodif = :userlastmodif")})
 public class Tuser implements Serializable {
+    
+    @Transient
+    private Boolean changes;
+    
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)
     @Size(min = 1, max = 254)
@@ -76,7 +78,9 @@ public class Tuser implements Serializable {
     @JsonManagedReference
     private Collection<Tusergroup> tusergroupCollection;
 
+
     public Tuser() {
+        this.changes = false;
     }
 
     public Tuser(String useremail, String username, String userlastname, String userpassword, boolean useradmin) {
@@ -85,6 +89,7 @@ public class Tuser implements Serializable {
         this.userlastname = userlastname;
         this.userpassword = userpassword;
         this.useradmin = useradmin;
+        this.changes = false;
     }
 
     public String getUseremail() {
@@ -149,6 +154,14 @@ public class Tuser implements Serializable {
 
     public void setTusergroupCollection(Collection<Tusergroup> tusergroupCollection) {
         this.tusergroupCollection = tusergroupCollection;
+    }
+    
+    public Boolean isChanges() {
+        return changes;
+    }
+
+    public void setChanges(Boolean changes) {
+        this.changes = changes;
     }
 
     @Override

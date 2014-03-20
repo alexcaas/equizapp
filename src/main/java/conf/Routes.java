@@ -19,6 +19,7 @@ package conf;
 import com.google.inject.Inject;
 import controllers.ApiGroupController;
 import controllers.ApiItemController;
+import controllers.ApiSyncController;
 import ninja.Router;
 import ninja.application.ApplicationRoutes;
 import ninja.utils.NinjaProperties;
@@ -69,6 +70,8 @@ public class Routes implements ApplicationRoutes {
         router.DELETE().route("/api/deleteitem/{itemid}").with(ApiItemController.class, "deleteItem");
         
         /// SYNC API
+        router.POST().route("/api/userchanges").with(ApiSyncController.class, "postUserChangesJson");
+        router.POST().route("/api/groupchanges").with(ApiSyncController.class, "postGroupChangesJson");
 
  
         ///////////////////////////////////////////////////////////////////////

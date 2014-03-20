@@ -1,19 +1,18 @@
 /**
  * Copyright (C) 2012 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
-
 package controllers;
 
 import ninja.Result;
@@ -31,12 +30,11 @@ import ninja.i18n.Messages;
 import ninja.params.Param;
 import ninja.params.PathParam;
 
-
 @Singleton
 public class ApiItemController extends BaseController {
-      
+
     @Inject
-    ApiItemController (Messages msg) {
+    ApiItemController(Messages msg) {
         this.msg = msg;
     }
 
@@ -44,64 +42,63 @@ public class ApiItemController extends BaseController {
     ItemDao itemDao;
     @Inject
     GroupDao groupDao;
-    
-    
+
     public Result postNewItemAndAnswersJson(@Param("itemstring") String itemstring,
-                            @Param("itemdifficulty") String itemdifficulty,
-                            @Param("groupcode") String groupcode,
-                            @Param("answerstring1") String answerstring1,
-                            @Param("answercorrect1") String answercorrect1,
-                            @Param("answerstring2") String answerstring2,
-                            @Param("answercorrect2") String answercorrect2,
-                            @Param("answerstring3") String answerstring3,
-                            @Param("answercorrect3") String answercorrect3,
-                            Context context) {
-        
+            @Param("itemdifficulty") String itemdifficulty,
+            @Param("groupcode") String groupcode,
+            @Param("answerstring1") String answerstring1,
+            @Param("answercorrect1") String answercorrect1,
+            @Param("answerstring2") String answerstring2,
+            @Param("answercorrect2") String answercorrect2,
+            @Param("answerstring3") String answerstring3,
+            @Param("answercorrect3") String answercorrect3,
+            Context context) {
+
         try {
-            
+
             Short itemdifficultysi = Short.parseShort(itemdifficulty);
             Boolean answercorrect1bool = Boolean.parseBoolean(answercorrect1);
             Boolean answercorrect2bool = Boolean.parseBoolean(answercorrect2);
             Boolean answercorrect3bool = Boolean.parseBoolean(answercorrect3);
-            
+
             Titem item = new Titem(itemstring, itemdifficultysi, groupDao.getGroupByHashedGroupCode(groupcode));
-            
-            List <Tanswer> answers = new ArrayList();
+
+            List<Tanswer> answers = new ArrayList();
             Tanswer answer1 = new Tanswer(item, answerstring1, answercorrect1bool);
             Tanswer answer2 = new Tanswer(item, answerstring2, answercorrect2bool);
             Tanswer answer3 = new Tanswer(item, answerstring3, answercorrect3bool);
-            
+
             answers.add(answer1);
             answers.add(answer2);
             answers.add(answer3);
 
             item.setTanswerCollection(answers);
-            
+
             itemDao.postNewItem(item);
-                    
+
             context.getFlashScope().success("postnewitemandanswersok");
             return Results.json().render(item);
-                
-           } catch (NullPointerException e) {
-               context.getFlashScope().error("postnewitemandanswersfail");
-               return Results.text().renderRaw(this.getMsg("item.postNewItemAndAnswersFail", context));
+
+        } catch (NullPointerException e) {
+            context.getFlashScope().error("postnewitemandanswersfail");
+            return Results.text().renderRaw(this.getMsg("item.postNewItemAndAnswersFail", context));
         }
-        
+
     }
-    
+
     public Result postUpdateItemAndAnswersJson(@Param("itemid") String itemid,
-                            @Param("itemstring") String itemstring,
-                            @Param("itemdifficulty") String itemdifficulty,
-                            @Param("answerstring1") String answerstring1,
-                            @Param("answercorrect1") String answercorrect1,
-                            @Param("answerstring2") String answerstring2,
-                            @Param("answercorrect2") String answercorrect2,
-                            @Param("answerstring3") String answerstring3,
-                            @Param("answercorrect3") String answercorrect3,
-                            Context context) {
-        
+            @Param("itemstring") String itemstring,
+            @Param("itemdifficulty") String itemdifficulty,
+            @Param("answerstring1") String answerstring1,
+            @Param("answercorrect1") String answercorrect1,
+            @Param("answerstring2") String answerstring2,
+            @Param("answercorrect2") String answercorrect2,
+            @Param("answerstring3") String answerstring3,
+            @Param("answercorrect3") String answercorrect3,
+            Context context) {
+
         try {
-            
+
             Long itemidl = Long.parseLong(itemid);
             Short itemdifficultysi = Short.parseShort(itemdifficulty);
             Boolean answercorrect1bool = Boolean.parseBoolean(answercorrect1);
@@ -109,38 +106,38 @@ public class ApiItemController extends BaseController {
             Boolean answercorrect3bool = Boolean.parseBoolean(answercorrect3);
 
             Titem item = itemDao.getItemById(itemidl);
-            
+
             item.setItemstring(itemstring);
             item.setItemdifficulty(itemdifficultysi);
-            
-            List <Tanswer> answers = (List <Tanswer>)item.getTanswerCollection();
+
+            List<Tanswer> answers = (List<Tanswer>) item.getTanswerCollection();
             answers.get(0).setAnswerstring(answerstring1);
             answers.get(0).setAnswercorrect(answercorrect1bool);
             answers.get(1).setAnswerstring(answerstring2);
             answers.get(1).setAnswercorrect(answercorrect2bool);
             answers.get(2).setAnswerstring(answerstring3);
             answers.get(2).setAnswercorrect(answercorrect3bool);
-            
+
             item.setTanswerCollection(answers);
 
             itemDao.postUpdateItem(item);
-            
+
             context.getFlashScope().success("postupdateitemandanswersok");
             return Results.json().render(item);
-                
-           } catch (NullPointerException e) {
-               context.getFlashScope().error("postupdateitemandanswersfail");
-               return Results.text().renderRaw(this.getMsg("item.postUpdateItemAndAnswersFail", context));
+
+        } catch (NullPointerException e) {
+            context.getFlashScope().error("postupdateitemandanswersfail");
+            return Results.text().renderRaw(this.getMsg("item.postUpdateItemAndAnswersFail", context));
         }
-        
+
     }
-    
+
     public Result deleteItem(@PathParam("itemid") String itemid,
-                            Context context) {
-        
+            Context context) {
+
         Long itemidl = Long.parseLong(itemid);
         Boolean ok = itemDao.deleteItem(itemidl);
-        
+
         if (ok) {
             context.getFlashScope().success("deleteitemok");
             return Results.text().renderRaw(this.getMsg("item.deleteItemOk", context));
@@ -148,8 +145,7 @@ public class ApiItemController extends BaseController {
             context.getFlashScope().success("deletegroupfail");
             return Results.text().renderRaw(this.getMsg("item.deleteItemFail", context));
         }
-        
-        
+
     }
-    
+
 }

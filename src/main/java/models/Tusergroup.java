@@ -22,6 +22,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 /**
  *
@@ -36,7 +37,7 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Tusergroup.findByDatetestdone", query = "SELECT t FROM Tusergroup t WHERE t.datetestdone = :datetestdone"),
     @NamedQuery(name = "Tusergroup.findByUserid", query = "SELECT t FROM Tusergroup t WHERE t.tusergroupPK.userid = :userid"),
     @NamedQuery(name = "Tusergroup.findByUsertreatlastmodif", query = "SELECT t FROM Tusergroup t WHERE t.usertreatlastmodif = :usertreatlastmodif")})
-public class Tusergroup implements Serializable {
+public class Tusergroup implements Serializable {    
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected TusergroupPK tusergroupPK;
@@ -57,6 +58,7 @@ public class Tusergroup implements Serializable {
     @JsonManagedReference
     @JsonIgnore
     private Tgroup tgroup;
+   
 
     public Tusergroup() {
     }

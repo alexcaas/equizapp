@@ -17,6 +17,9 @@
 package controllers;
 
 import com.google.common.base.Optional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import ninja.Context;
 import ninja.Result;
 import ninja.i18n.Messages;
@@ -34,5 +37,16 @@ public class BaseController {
         
         return amessage.get();
     }
+    
+    public Date parseDate (String date) throws ParseException{
+        
+        SimpleDateFormat formatoDeFecha;
+        formatoDeFecha = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssX"); //2014-03-19 14:36:09+01
+        Date modifdate;
+        modifdate = formatoDeFecha.parse(date);
+        
+        return modifdate;
+    }
+    
 
 }
