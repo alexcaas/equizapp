@@ -1,0 +1,90 @@
+<script id="tmpl-MainView" type="text/html">
+
+    <div id="mobilemenu" class="mobile-menu">
+        <a id="sidrlink" class="mobile-menu">
+            <button id="mobilemenubtn" type="button" class="btn btn-link btn-lg mobile-menu">
+                <span class="glyphicon glyphicon-align-justify"></span>
+            </button>
+        </a>
+    </div>
+
+    <style>
+        #mobilemenu {
+            display: none;
+        }
+        @media only screen and (max-width: 767px) {
+            #mobilemenu {
+                display: block;
+            }
+        }
+    </style>
+
+    <div id="sidr" class="navbar-header">
+
+        <ul class="nav nav-pills nav-stacked" style="max-width: 270px;">
+            <li  class="disabled">
+                <a>
+                    <small>
+                        <strong>eQuiz</strong>
+                    </small>
+                </a>
+            </li>
+            <li id="side-menu-groups-button" class="groups disabled">
+                <a>
+                    <span class="glyphicon glyphicon-list-alt"></span>
+                    <strong>Grupos</strong>
+                </a>
+            </li>
+            <li id="side-menu-sync-button" class="syncro disabled">
+                <a>
+                    <span class="glyphicon glyphicon-refresh"></span>
+                    <strong>Sincronizar ahora</strong>
+                </a>
+            </li>
+            <li id="side-menu-profile-button" class="profile disabled">
+                <a>
+                    <span class="glyphicon glyphicon-edit"></span>
+                    <strong>Editar perfil</strong>
+                </a>
+            </li>
+            <li id="side-menu-sesclose-button" class="sesclose disabled">
+                <a>
+                    <span class="glyphicon glyphicon-log-out"></span>
+                    <strong>Cerrar sesión</strong>
+                </a>
+            </li>
+            <li class="disabled">
+                <a>
+                    <small>
+                        <em>test@test.com</em>
+                        <br>Última sincronización:</small>
+                </a>
+
+            </li>
+        </ul>
+
+    </div>
+
+    <div class="MainView container">
+      
+        <div class="header voffsettop3 voffsettbot3 hidden-xs hidden-sm">
+        
+            <ul class="nav nav-pills pull-right">
+                <li><button id="top-menu-back-button" type="button" class="btn btn-link hide back">Volver</button></li>
+                <li><button id="top-menu-profile-button" type="button" class="btn btn-link hide profile">Editar perfil</button></li>
+                <li><button id="top-menu-sesclose-button" type="button" class="btn btn-link hide sesclose">Cerrar sesión</button></li>
+            </ul>
+            
+            <h3 class="text-muted">eQuiz</h3>
+        </div>
+
+        <div class="MainView-subView">
+        </div>
+
+        <!--<div class="footer">
+            <p>&copy; Alejandro C. 2014</p>
+        </div>-->
+ 
+     </div>
+        
+</script> 

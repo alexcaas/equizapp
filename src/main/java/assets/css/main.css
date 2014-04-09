@@ -1,0 +1,80 @@
+/*
+*/
+
+body {
+    font-size: 1.50em;
+    padding-top: 0px;
+    padding-bottom: 10px;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.groups {
+    cursor: pointer;
+}
+.syncro {
+    cursor: pointer;
+}
+.profile {
+    cursor: pointer;
+}
+.sesclose {
+    cursor: pointer;
+}
+.alert-block {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+.sidr {
+    /* Default Settings */
+    display: none;
+    position: absolute;
+    position: fixed;
+    top: 0;
+    height: 100%;
+    z-index: 999999;
+    width: 260px;
+    overflow-x: none;
+    overflow-y: auto;
+    .sidr-inner {
+        padding: 0 0 15px;
+        > p {
+            margin-left: 15px;
+            margin-right: 15px;
+        }
+    }
+    &.right {
+        left: auto;
+        right: -260px;
+    }
+    &.left {
+        left: -260px;
+        right: auto;
+    }
+}
+.voffsettop0 {
+    margin-top: 0px;
+}
+.voffsettbot0 {
+    margin-bottom: 0px;
+}
+.voffsettop1 {
+    margin-top: 2px;
+}
+.voffsettbot1 {
+    margin-bottom: 2px;
+}
+.voffsettop2 {
+    margin-top: 5px;
+}
+.voffsettbot2 {
+    margin-bottom: 5px;
+}
+.voffsettop3 {
+    margin-top: 10px;
+}
+.voffsettbot3 {
+    margin-bottom: 10px;
+}

@@ -1,17 +1,4 @@
 /**
- * Copyright (C) 2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
  */
 package controllers;
 
@@ -41,9 +28,22 @@ public class ApiGroupController extends BaseController {
     @Inject
     GroupDao groupDao;
 
-    public Result getGroupByHashedGroupCode(@PathParam("groupcode") String groupcode, Context context) {
+    public Result getGroupByGroupCode(@PathParam("groupcode") String groupcode, Context context) {
 
-        Tgroup group = (Tgroup) groupDao.getGroupByHashedGroupCode(groupcode);
+        Tgroup group = (Tgroup) groupDao.getGroupByGroupCode(Integer.parseInt(groupcode));
+
+        if (group == null) {
+            context.getFlashScope().error("getgroupbygroupcodefail");
+            return Results.text().renderRaw(this.getMsg("group.getGroupByGroupCodeFail", context));
+        } else {
+            return Results.json().render(group);
+        }
+
+    }
+    
+    public Result getGroupByHashedGroupCode(@PathParam("grouphashedcode") String grouphashedcode, Context context) {
+
+        Tgroup group = (Tgroup) groupDao.getGroupByHashedGroupCode(grouphashedcode);
 
         if (group == null) {
             context.getFlashScope().error("getgroupbyhashedgroupcodefail");

@@ -1,0 +1,40 @@
+<script id="tmpl-UserLoginView" type="text/html">
+
+    <div class="UserLoginView">
+    
+        <ol class="breadcrumb voffsettbot2">
+            <li class="active">Login</li>
+        </ol>
+
+        <form id="login-form" class="form-horizontal" role="form">
+          
+          <div class="alert alert-danger alert-block fade">
+            <button type="button" class="close">x</button>
+          </div>
+          
+          <div class="form-group">
+            <label for="user-email" class="col-lg-2 control-label">Email:</label>
+            <div class="col-lg-9">
+              <input type="email" class="form-control input" id="user-email" placeholder="Email" autocomplete="on" required data-prop="useremail">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="user-password" class="col-lg-2 control-label">Contraseña:</label>
+            <div class="col-lg-9">
+              <input type="password" class="form-control input" id="user-password" placeholder="Contraseña" required data-prop="userpassword">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-lg-offset-5 col-xs-offset-5">
+              <button type="submit" class="btn btn-info" value="Loginuser" data-action="Loginuser" id="login-user-button">Entrar</button>
+              <button type="button" class="btn btn-link col-lg-offset-1 " id="register-button">Registrar</button>
+            </div>
+          </div>
+          
+        </form>
+        
+    </div>
+
+</script>

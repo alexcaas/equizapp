@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context antiJARLocking="true" path="/equizapp">
-    <Resource auth="Container" driverClassName="org.postgresql.Driver" maxActive="20" maxIdle="10" maxWait="-1" name="Ujian" username="equiz" password="equiz" type="javax.sql.DataSource" url="jdbc:postgresql://localhost:5432/bd_ujian"/>
+    
 </Context>

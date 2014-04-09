@@ -1,17 +1,4 @@
 /**
- * Copyright (C) 2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 package conf;
@@ -25,6 +12,8 @@ import ninja.application.ApplicationRoutes;
 import ninja.utils.NinjaProperties;
 import controllers.ApiUserController;
 import controllers.ApiUserGroupController;
+import controllers.BaseController;
+import ninja.AssetsController;
 
 public class Routes implements ApplicationRoutes {
     
@@ -51,13 +40,14 @@ public class Routes implements ApplicationRoutes {
         /// USER API
         router.POST().route("/api/login").with(ApiUserController.class, "postLoginJson");
         router.GET().route("/api/logout").with(ApiUserController.class, "getLogout");
-        router.GET().route("/api/{useremail}/user").with(ApiUserController.class, "getUserByEmailJson");
+        router.GET().route("/api/getuser/{useremail}").with(ApiUserController.class, "getUserByEmailJson");
         router.POST().route("/api/registeruser").with(ApiUserController.class, "postRegisterUserJson");
         router.POST().route("/api/updateuser").with(ApiUserController.class, "postUpdateUserJson");    
         
         
         /// GROUP API
-        router.GET().route("/api/{groupcode}/group").with(ApiGroupController.class, "getGroupByHashedGroupCode");
+        router.GET().route("/api/getgroup/{groupcode}").with(ApiGroupController.class, "getGroupByGroupCode");
+        router.GET().route("/api/gethashedgroup/{grouphashedcode}").with(ApiGroupController.class, "getGroupByHashedGroupCode");
         router.POST().route("/api/newgroup").with(ApiGroupController.class, "postNewGroupJson");
         router.DELETE().route("/api/deletegroup/{codestr}").with(ApiGroupController.class, "deleteGroup");
         
@@ -76,13 +66,13 @@ public class Routes implements ApplicationRoutes {
  
         ///////////////////////////////////////////////////////////////////////
         // Assets (pictures / javascript)
-        ///////////////////////////////////////////////////////////////////////    
-        //router.GET().route("/assets/.*").with(AssetsController.class, "serve");
+        ///////////////////////////////////////////////////////////////////////   
+        router.GET().route("/assets/{fileName: .*}").with(AssetsController.class, "serveStatic");
         
         ///////////////////////////////////////////////////////////////////////
         // Index / Catchall shows index page
         ///////////////////////////////////////////////////////////////////////
-        //router.GET().route("/.*").with(ApiUserController.class, "index");
+        router.GET().route("/.*").with(BaseController.class, "index");
     }
 
 }
