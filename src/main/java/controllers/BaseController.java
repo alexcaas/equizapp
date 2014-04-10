@@ -18,9 +18,6 @@ import ninja.i18n.Messages;
 @Singleton
 public class BaseController {
     
-    @Inject
-    AssetsController assetsController;
-    
     Messages msg;
     
     public String getMsg (String key, Context context){
