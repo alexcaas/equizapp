@@ -1,2 +1,5 @@
 /nb-configuration.xml
 /target/
+/src/main/mobapp/platforms/
+/src/main/mobapp/merges/
+/src/main/mobapp/hooks/
