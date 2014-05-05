@@ -3,7 +3,8 @@
 
 package models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -38,12 +39,18 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Tuser.findByUseradmin", query = "SELECT t FROM Tuser t WHERE t.useradmin = :useradmin"),
     @NamedQuery(name = "Tuser.findByUserid", query = "SELECT t FROM Tuser t WHERE t.userid = :userid"),
     @NamedQuery(name = "Tuser.findByUserlastmodif", query = "SELECT t FROM Tuser t WHERE t.userlastmodif = :userlastmodif")})
+@JsonIdentityInfo(generator=ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class Tuser implements Serializable {
     
     @Transient
     private Boolean changes;
     
     private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "userid")
+    private Long userid;
     @Basic(optional = false)
     @Size(min = 1, max = 254)
     @Column(name = "useremail")
@@ -63,16 +70,10 @@ public class Tuser implements Serializable {
     @Basic(optional = false)
     @Column(name = "useradmin")
     private boolean useradmin;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "userid")
-    private Long userid;
     @Column(name = "userlastmodif")
     @Temporal(TemporalType.TIMESTAMP)
     private Date userlastmodif;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tuser", fetch=FetchType.EAGER)
-    @JsonManagedReference
     private Collection<Tusergroup> tusergroupCollection;
 
 

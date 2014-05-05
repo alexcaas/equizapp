@@ -16,6 +16,7 @@ import ninja.Context;
 import ninja.i18n.Messages;
 import ninja.params.Param;
 import ninja.params.PathParam;
+import ninja.utils.LoggerProvider;
 
 @Singleton
 public class ApiItemController extends BaseController {
@@ -29,6 +30,9 @@ public class ApiItemController extends BaseController {
     ItemDao itemDao;
     @Inject
     GroupDao groupDao;
+    
+    @Inject
+    LoggerProvider logger;
 
     public Result postNewItemAndAnswersJson(@Param("itemstring") String itemstring,
             @Param("itemdifficulty") String itemdifficulty,
@@ -119,17 +123,21 @@ public class ApiItemController extends BaseController {
 
     }
 
-    public Result deleteItem(@PathParam("itemid") String itemid,
-            Context context) {
+    public Result deleteItem(@PathParam("itemid") String itemid, Context context) {
+        
+        
 
-        Long itemidl = Long.parseLong(itemid);
+        Long itemidl = Long.parseLong(String.valueOf(itemid));
+        
+        logger.get().debug("zzzzzzz  " + itemidl);
+
         Boolean ok = itemDao.deleteItem(itemidl);
 
         if (ok) {
             context.getFlashScope().success("deleteitemok");
             return Results.text().renderRaw(this.getMsg("item.deleteItemOk", context));
         } else {
-            context.getFlashScope().success("deletegroupfail");
+            context.getFlashScope().success("deleteitemfail");
             return Results.text().renderRaw(this.getMsg("item.deleteItemFail", context));
         }
 

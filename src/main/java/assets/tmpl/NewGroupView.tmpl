@@ -1,0 +1,29 @@
+<script id="tmpl-NewGroupView" type="text/html">
+
+    <div class="NewGroupView">
+        
+        <form id="newgroup-form" class="form-horizontal" role="form">
+            
+            <div class="form-group">
+                <label for="group-name" class="col-lg-4 control-label">Nombre del Grupo:</label>
+                <div class="col-lg-6">
+                  <input type="text" class="form-control input" id="group-name" placeholder="Nombre del grupo" required data-prop="groupname">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="group-num-items" class="col-lg-4 control-label">Número de preguntas:</label>
+                <div class="col-lg-6">
+                  <input type="number" min="10" max="50" class="form-control input" id="group-num-items" placeholder="Número de preguntas por test" required data-prop="groupname">
+                </div>
+            </div>
+                <div class="form-group">
+                <div class="col-lg-offset-5 col-xs-offset-5">
+                  <button type="submit" class="btn btn-info btn-l" value="newgroup" data-action="newgroup" id="newgroup_button">Aceptar</button>
+                </div>
+            </div>
+            
+        </form>
+
+    </div>
+    
+</script>

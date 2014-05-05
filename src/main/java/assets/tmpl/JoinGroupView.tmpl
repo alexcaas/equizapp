@@ -1,0 +1,23 @@
+<script id="tmpl-JoinGroupView" type="text/html">
+    
+    <div class="JoinGroupView">
+        
+        <form id="joingroup-form" class="form-horizontal" role="form">
+            
+            <div class="form-group">
+                <label for="codegroup-name" class="col-lg-4 control-label">Código del Grupo:</label>
+                <div class="col-lg-6">
+                  <input type="text" pattern="[0-9A-Za-z]+" class="form-control input" id="codegroup" placeholder="Números y letras" required data-prop="codegroup">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-offset-5 col-xs-offset-5">
+                  <button type="submit" class="btn btn-info btn-l" value="joingroup" data-action="joingroup" id="joingroup_button">Unirse</button>
+                </div>
+            </div>
+            
+        </form>
+
+    </div>
+            
+</script>

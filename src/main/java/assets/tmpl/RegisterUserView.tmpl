@@ -1,16 +1,8 @@
 <script id="tmpl-RegisterUserView" type="text/html">
 
     <div class="RegisterUserView">
-    
-        <ol class="breadcrumb voffsettbot2">
-            <li class="active">Registrar usuario</li>
-        </ol>
         
         <form id="register-form" class="form-horizontal" role="form">
-          
-          <div class="alert alert-danger alert-block fade voffsettbot2">
-            <button type="button" class="close">×</button>
-          </div>
           
           <div class="form-group">
             <label for="regu-user-email" class="col-lg-2 control-label">Email:</label>
@@ -22,41 +14,41 @@
           <div class="form-group">
             <label for="regu-user-name" class="col-lg-2 control-label">Nombre:</label>
             <div class="col-lg-9">
-              <input type="text" class="form-control" id="regu-user-name" placeholder="Nombre" autocomplete="on" required data-prop="username">
+              <input type="text" class="form-control input" id="regu-user-name" placeholder="Nombre" autocomplete="on" required data-prop="username">
             </div>
           </div>
           
           <div class="form-group">
             <label for="regu-user-lastnames" class="col-lg-2 control-label">Apellidos:</label>
             <div class="col-lg-9">
-              <input type="text" class="form-control" id="regu-user-lastnames" placeholder="Apellidos" autocomplete="on" required data-prop="userlastnames">
+              <input type="text" class="form-control input" id="regu-user-lastnames" placeholder="Apellidos" autocomplete="on" required data-prop="userlastnames">
             </div>
           </div>
 
           <div class="form-group">
             <label for="regu-user-password" class="col-lg-2 control-label">Contraseña:</label>
             <div class="col-lg-9">
-              <input type="password" class="form-control" id="regu-user-password" placeholder="Contraseña" required data-prop="userpassword">
+              <input type="password" class="form-control input" id="regu-user-password" placeholder="Contraseña" required data-prop="userpassword">
             </div>
           </div>
           
           <div class="form-group">
             <label for="regu-user-retypepassword" class="col-lg-2 control-label">Contraseña:</label>
             <div class="col-lg-9">
-              <input type="password" class="form-control" id="regu-user-retypepassword" placeholder="Repita contraseña" required data-prop="userretypepassword">
+              <input type="password" class="form-control input has-warning" id="regu-user-retypepassword" placeholder="Repita contraseña" required data-prop="userretypepassword">
             </div>
           </div>
           
-          <div class="form-group">
+          <div id="admin-check" class="form-group mobileapphide">
             <label for="regu-user-admin" class="col-lg-2 col-xs-3 control-label">¿Profesor?:</label>
             <div class="checkbox col-lg-3 col-xs-3">
-                <input id="regu-user-admin" type="checkbox" value="" required data-prop="useradmin">
+                <input id="regu-user-admin" type="checkbox" value="" data-prop="useradmin">
             </div>
           </div>
 
           <div class="form-group">
             <div class="col-lg-offset-5 col-xs-offset-5">
-              <button type="submit" class="btn btn-info" value="registeruser" data-action="registeruser" id="regu-register_button">Registrar</button>
+              <button type="submit" class="btn btn-info btn-l" value="registeruser" data-action="registeruser" id="regu-register_button">Registrar</button>
             </div>
           </div>
           

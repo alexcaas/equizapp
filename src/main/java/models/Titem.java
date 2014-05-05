@@ -3,8 +3,8 @@
 
 package models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -39,7 +39,8 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Titem.findByItemstring", query = "SELECT t FROM Titem t WHERE t.itemstring = :itemstring"),
     @NamedQuery(name = "Titem.findByItemdifficulty", query = "SELECT t FROM Titem t WHERE t.itemdifficulty = :itemdifficulty"),
     @NamedQuery(name = "Titem.findByItemlastmodif", query = "SELECT t FROM Titem t WHERE t.itemlastmodif = :itemlastmodif"),
-    @NamedQuery(name = "Titem.findByGroupcode", query = "SELECT t FROM Titem t WHERE t.groupcode = :groupcode")})
+    @NamedQuery(name = "Titem.findByGroupcode", query = "SELECT t FROM Titem t WHERE t.tgroup = :tgroup")})
+@JsonIdentityInfo(generator=ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class Titem implements Serializable {
     
     @Transient
@@ -63,10 +64,8 @@ public class Titem implements Serializable {
     private Date itemlastmodif;
     @JoinColumn(name = "groupcode", referencedColumnName = "groupcode")
     @ManyToOne(optional = false, fetch=FetchType.EAGER)
-    @JsonBackReference
-    private Tgroup groupcode;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "itemid", fetch=FetchType.EAGER)
-    @JsonManagedReference
+    private Tgroup tgroup;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "titem", fetch=FetchType.EAGER, orphanRemoval=true)
     private Collection<Tanswer> tanswerCollection;
     
 
@@ -77,7 +76,7 @@ public class Titem implements Serializable {
     public Titem(String itemstring, short itemdifficulty , Tgroup group) {
         this.itemstring = itemstring;
         this.itemdifficulty = itemdifficulty;
-        this.groupcode = group;
+        this.tgroup = group;
         this.changes = false;
     }
 
@@ -113,12 +112,12 @@ public class Titem implements Serializable {
         this.itemlastmodif = itemlastmodif;
     }
 
-    public Tgroup getGroupcode() {
-        return groupcode;
+    public Tgroup getGroup() {
+        return tgroup;
     }
 
-    public void setGroupcode(Tgroup groupcode) {
-        this.groupcode = groupcode;
+    public void setGroup(Tgroup group) {
+        this.tgroup = group;
     }
 
     public Collection<Tanswer> getTanswerCollection() {

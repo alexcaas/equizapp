@@ -8,56 +8,60 @@
         </a>
     </div>
 
-    <style>
-        #mobilemenu {
-            display: none;
-        }
-        @media only screen and (max-width: 767px) {
-            #mobilemenu {
-                display: block;
-            }
-        }
-    </style>
-
     <div id="sidr" class="navbar-header">
 
-        <ul class="nav nav-pills nav-stacked" style="max-width: 270px;">
-            <li  class="disabled">
+        <ul id="side-menu" class="nav nav-pills nav-stacked">
+            <li  class="disabled" style="margin-bottom: -2px;margin-top: 5px;">
                 <a>
-                    <small>
-                        <strong>eQuiz</strong>
-                    </small>
+                    <strong style="color: rgba(66, 139, 202, 0.65);padding-left: 5px;">eQ Menú</strong>
                 </a>
             </li>
-            <li id="side-menu-groups-button" class="groups disabled">
+            <hr>
+            <li id="side-menu-groups-button" class="groups disabled hide mobileappshow">
                 <a>
-                    <span class="glyphicon glyphicon-list-alt"></span>
+                    <span class="glyphicon glyphicon-list-alt">&nbsp;</span>
                     <strong>Grupos</strong>
                 </a>
             </li>
-            <li id="side-menu-sync-button" class="syncro disabled">
+            <li id="side-menu-back-button" class="back disabled mobileapphide">
                 <a>
-                    <span class="glyphicon glyphicon-refresh"></span>
-                    <strong>Sincronizar ahora</strong>
+                    <span class="glyphicon glyphicon-share-alt">&nbsp;</span>
+                    <strong>Volver</strong>
                 </a>
             </li>
-            <li id="side-menu-profile-button" class="profile disabled">
+            <hr>
+            <li id="side-menu-profile-button" class="profile disabled mobileapphide">
                 <a>
-                    <span class="glyphicon glyphicon-edit"></span>
+                    <span class="glyphicon glyphicon-edit">&nbsp;</span>
                     <strong>Editar perfil</strong>
                 </a>
             </li>
+            <li id="side-menu-sync-button" class="syncro disabled hide mobileappshow">
+                <a>
+                    <span class="glyphicon glyphicon-refresh">&nbsp;</span>
+                    <strong>Sincronizar ahora</strong>
+                </a>
+            </li>
+            <hr>
             <li id="side-menu-sesclose-button" class="sesclose disabled">
                 <a>
-                    <span class="glyphicon glyphicon-log-out"></span>
+                    <span class="glyphicon glyphicon-log-out">&nbsp;</span>
                     <strong>Cerrar sesión</strong>
                 </a>
             </li>
+            <hr>
             <li class="disabled">
                 <a>
                     <small>
-                        <em>test@test.com</em>
-                        <br>Última sincronización:</small>
+                        <span class="small glyphicon glyphicon-envelope">
+                        <em id="side-menu-useremail"></em>
+                    </small>
+                </a>
+            </li>
+            <li class="disabled hide mobileappshow">
+                <a>
+                    <small><span class="glyphicon glyphicon-cloud-upload"> Sincronizado:</small>
+                    <small><br><em class = "small" id="last-sync"></em></small>
                 </a>
 
             </li>
@@ -67,7 +71,7 @@
 
     <div class="MainView container">
       
-        <div class="header voffsettop3 voffsettbot3 hidden-xs hidden-sm">
+        <div class="header voffsettop3 voffsetbot3 hidden-xs">
         
             <ul class="nav nav-pills pull-right">
                 <li><button id="top-menu-back-button" type="button" class="btn btn-link hide back">Volver</button></li>
@@ -75,9 +79,18 @@
                 <li><button id="top-menu-sesclose-button" type="button" class="btn btn-link hide sesclose">Cerrar sesión</button></li>
             </ul>
             
-            <h3 class="text-muted">eQuiz</h3>
+            <h3 class="text-muted">eQ</h3>
+            
+      </div>
+        
+        <ol class="breadcrumb voffsetbot2">
+            <li class="active" id="bread-crumb"></li>
+        </ol>
+            
+        <div class="alert alert-danger alert-block fade error">
+            <button type="button" class="close">x</button>
         </div>
-
+        
         <div class="MainView-subView">
         </div>
 

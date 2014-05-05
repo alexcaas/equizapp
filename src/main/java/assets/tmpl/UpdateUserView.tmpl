@@ -1,55 +1,47 @@
 <script id="tmpl-UpdateUserView" type="text/html">
 
     <div class="UpdateUserView">
-    
-        <ol class="breadcrumb voffsettbot2">
-            <li class="active">Actualizar usuario</li>
-        </ol>
 
-        <form id="register_form" class="form-horizontal" role="form">
-          
-          <div class="alert alert-danger alert-block fade voffsettbot2">
-            <button type="button" class="close">×</button>
-          </div>
+        <form id="update-user-form" class="form-horizontal" data-entity="User" data-entity-id="{{user.useremail}}" role="form">
           
           <div class="form-group">
-            <label for="updu-user-email" class="col-lg-2 control-label">Email:</label>
+            <label for="updu-user-email" class="col-lg-2 control-label no-mobile">Email:</label>
             <div class="col-lg-9">
-                <p class="form-control-static"><strong>email@ejemplo.com</strong></p>
+                <p class="form-control-static"><strong>{{user.useremail}}</strong></p>
             </div>
           </div>
           
           <div class="form-group">
             <label for="updu-user-name" class="col-lg-2 control-label">Nombre:</label>
             <div class="col-lg-9">
-              <input type="text" class="form-control" id="updu-user-name" placeholder="Nombre" autocomplete="on" required data-prop="username">
+              <input type="text" class="form-control" id="updu-user-name" placeholder="Nombre" autocomplete="on" data-prop="username" value="{{user.username}}">
             </div>
           </div>
           
           <div class="form-group">
             <label for="updu-user-lastnames" class="col-lg-2 control-label">Apellidos:</label>
             <div class="col-lg-9">
-              <input type="text" class="form-control" id="updu-user-lastnames" placeholder="Apellidos" autocomplete="on" required data-prop="userlastnames">
+              <input type="text" class="form-control" id="updu-user-lastnames" placeholder="Apellidos" autocomplete="on" data-prop="userlastnames" value="{{user.userlastname}}">
             </div>
           </div>
 
           <div class="form-group">
             <label for="updu-user-password" class="col-lg-2 control-label">Contraseña:</label>
             <div class="col-lg-9">
-              <input type="password" class="form-control" id="updu-user-password" placeholder="Contraseña" required data-prop="userpassword">
+              <input type="password" class="form-control" id="updu-user-password" placeholder="Contraseña" data-prop="userpassword">
             </div>
           </div>
           
           <div class="form-group">
             <label for="updu-user-retypepassword" class="col-lg-2 control-label">Contraseña:</label>
             <div class="col-lg-9">
-              <input type="password" class="form-control" id="updu-user-retypepassword" placeholder="Repita contraseña" required data-prop="userretypepassword">
+              <input type="password" class="form-control" id="updu-user-retypepassword" placeholder="Repita contraseña" data-prop="userretypepassword">
             </div>
           </div>
 
           <div class="form-group">
             <div class="col-lg-offset-5 col-xs-offset-5">
-              <button type="submit" class="btn btn-info" value="updateuser" data-action="updateuser" id="updu-update-button">Actualizar</button>
+              <button type="submit" class="btn btn-info btn-l" value="updateuser" data-action="updateuser" id="updu-update-button">Actualizar</button>
             </div>
           </div>
           

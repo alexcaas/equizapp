@@ -141,5 +141,27 @@ public class UserDao {
 
         return user;
     }
+    
+//    @Transactional
+//    public Tuser getChanges(String useremail, Date lastmodif) {
+//
+//        Tuser user = null;
+//
+//        try {
+//
+//            user = this.getUserByEmail(useremail);
+//
+//            if (user.getUserlastmodif().compareTo(lastmodif) > 0) {
+//                user.setChanges(Boolean.TRUE);
+//            } else {
+//                user.setChanges(Boolean.FALSE);
+//            }
+//
+//        } catch (NoResultException e) {
+//            logger.get().info(this.toString() + " No user found!!");
+//        }
+//
+//        return user;
+//    }
 
 }

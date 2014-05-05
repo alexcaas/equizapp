@@ -3,7 +3,8 @@
 
 package models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -30,7 +31,8 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Tanswer.findByAnswerid", query = "SELECT t FROM Tanswer t WHERE t.answerid = :answerid"),
     @NamedQuery(name = "Tanswer.findByAnswerstring", query = "SELECT t FROM Tanswer t WHERE t.answerstring = :answerstring"),
     @NamedQuery(name = "Tanswer.findByAnswercorrect", query = "SELECT t FROM Tanswer t WHERE t.answercorrect = :answercorrect"),
-    @NamedQuery(name = "Tanswer.findByItemid", query = "SELECT t FROM Tanswer t WHERE t.itemid = :itemid")})
+    @NamedQuery(name = "Tanswer.findByItemid", query = "SELECT t FROM Tanswer t WHERE t.titem = :titem")})
+@JsonIdentityInfo(generator=ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class Tanswer implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -47,14 +49,13 @@ public class Tanswer implements Serializable {
     private boolean answercorrect;
     @JoinColumn(name = "itemid", referencedColumnName = "itemid")
     @ManyToOne(optional = false, fetch=FetchType.EAGER)
-    @JsonBackReference
-    private Titem itemid;
+    private Titem titem;
 
     public Tanswer() {
     }
 
-    public Tanswer(Titem itemid, String answerstring, boolean answercorrect) {
-        this.itemid = itemid;
+    public Tanswer(Titem item, String answerstring, boolean answercorrect) {
+        this.titem = item;
         this.answerstring = answerstring;
         this.answercorrect = answercorrect;
     }
@@ -83,12 +84,12 @@ public class Tanswer implements Serializable {
         this.answercorrect = answercorrect;
     }
 
-    public Titem getItemid() {
-        return itemid;
+    public Titem getItem() {
+        return titem;
     }
 
-    public void setItemid(Titem itemid) {
-        this.itemid = itemid;
+    public void setItem(Titem item) {
+        this.titem = item;
     }
 
     @Override

@@ -95,49 +95,49 @@ public class GroupDao {
     }
 
     @Transactional
-    public Boolean deleteGroup(String groupcodestr) {
+    public Boolean deleteGroup(String groupcode) {
 
         EntityManager entityManager = entityManagerProvider.get();
         Boolean ok = false;
 
         try {
 
-            Tgroup group = (Tgroup) getGroupByHashedGroupCode(groupcodestr);
+            Tgroup group = (Tgroup) getGroupByGroupCode(Integer.parseInt(groupcode));
             entityManager.remove(group);
             ok = true;
         } catch (PersistenceException e) {
-            logger.get().info(this.toString() + " -- " + groupcodestr + " -- Delete group failed!!");
+            logger.get().info(this.toString() + " -- " + groupcode + " -- Delete group failed!!");
         }
 
         return ok;
 
     }
 
-    @Transactional
-    public Tgroup getChanges(String groupcode, Date lastmodif) {
-
-        Tgroup group = null;
-
-        try {
-
-            group = this.getGroupByGroupCode(Integer.parseInt(groupcode));
-
-            if (group.getGrouplastmodif().compareTo(lastmodif) > 0) {
-                group.setChanges(Boolean.TRUE);
-            } else {
-                group.setChanges(Boolean.FALSE);
-            }
-
-            Collection<Titem> itemsCollection;
-            itemsCollection = itemDao.getChanges(group, lastmodif);
-
-            group.setTitemCollection(itemsCollection);
-
-        } catch (NoResultException e) {
-            logger.get().info(this.toString() + " No groups by user found!!");
-        }
-
-        return group;
-    }
+//    @Transactional
+//    public Tgroup getChanges(String groupcode, Date lastmodif) {
+//
+//        Tgroup group = null;
+//
+//        try {
+//
+//            group = this.getGroupByGroupCode(Integer.parseInt(groupcode));
+//
+//            if (group.getGrouplastmodif().compareTo(lastmodif) > 0) {
+//                group.setChanges(Boolean.TRUE);
+//            } else {
+//                group.setChanges(Boolean.FALSE);
+//            }
+//
+//            Collection<Titem> itemsCollection;
+//            itemsCollection = itemDao.getChanges(group, lastmodif);
+//
+//            group.setTitemCollection(itemsCollection);
+//
+//        } catch (NoResultException e) {
+//            logger.get().info(this.toString() + " No groups by user found!!");
+//        }
+//
+//        return group;
+//    }
 
 }

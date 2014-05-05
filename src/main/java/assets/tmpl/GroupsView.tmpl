@@ -1,12 +1,31 @@
 <script id="tmpl-GroupsView" type="text/html">
 
     <div class="GroupsView">
-    
-        <ol class="breadcrumb">
-            <li class="active">Grupos</li>
-        </ol>
+               
+        <ul class="list-group voffsettop4 ">
+          <li class="list-group-item list-group-item-info cursor-pointer admin hide" id="new-group-li">
+                <a><span class="glyphicon glyphicon-plus">&nbsp;</span>Nuevo Grupo</a>     
+          </li>
+            <li class="list-group-item list-group-item-info cursor-pointer user hide" id="join-group-li">
+                <a><span class="glyphicon glyphicon-pushpin">&nbsp;</span>Unirse a Grupo</a>     
+          </li>
+          {{#each groups}}
+              <li class="list-group-item" data-entity="Group" data-entity-id="{{this.groupcode}}">
 
-        
+                  <section class="items-section cursor-pointer">
+                      <span id="delete-group" class="glyphicon glyphicon-remove  pull-right blue"></span>
+                      <button type="button" class="btn btn-info btn-xs pull-right copy-groupcodestr" value="" data-action="copycode" id="copycode_button">{{this.groupcodestr}}</button>
+                      <span id="groupcodestr" class="pull-right" data-container="body" data-toggle="popover" data-placement="left" data-content="Copiar código" data-original-title="" title=""></span>
+                      <a id = "groupclick" class = "cursor-pointer">
+                          <span class="glyphicon glyphicon-list-alt">&nbsp;</span>{{this.groupname}} 
+                      </a>
+                      
+                  </section>
+                  
+              </li>
+          {{/each}}
+        </ul>
+
     </div>
 
 </script>

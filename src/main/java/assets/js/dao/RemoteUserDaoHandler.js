@@ -2,12 +2,13 @@
 
 (function ($) {
 
-    /**
-     * Create a RemoteUserDaoHandler type
-     *
-     */
-    function RemoteUserDaoHandler() {
+    function RemoteUserDaoHandler(host) {
         this._entityType = "User";
+        if (host) {
+            this._host = host;
+        } else {
+            this._host = "";
+        }
     }
 
     // --------- DAO Info Methods --------- //
@@ -21,15 +22,10 @@
 
     // --------- DAO Interface Implementation --------- //
 
-    /**
-     * DAO Interface. Get User by email
-     * @param {String} useremail
-     * @return the entity or String (Promise)
-     */
     RemoteUserDaoHandler.prototype.getUserbyEmail = function (useremail) {
         var ajaxPromise = $.ajax({
             type: "GET",
-            url: "/api/getuser/" + useremail
+            url: this._host + "/api/getuser/" + useremail
         });
 
         ajaxPromise.fail(function (XHR, textStatus) {
@@ -39,15 +35,10 @@
         return ajaxPromise;
     }
 
-    /**
-     * DAO Interface. Login user.
-     * @param {object} useremail, password
-     * @return the entity or String (Promise)
-     */
     RemoteUserDaoHandler.prototype.userLogin = function (data) {
         var ajaxPromise = $.ajax({
             type: "POST",
-            url: "/api/login",
+            url: this._host + "/api/login",
             headers: {
                 "Accept": "*/*"
             },
@@ -61,19 +52,13 @@
         return ajaxPromise;
     }
 
-
-    /**
-     * DAO Interface. Logout user.
-     * @param {}
-     * @return String (Promise)
-     */
     RemoteUserDaoHandler.prototype.userLogout = function () {
         var ajaxPromise = $.ajax({
             type: "GET",
             headers: {
                 "Accept": "*/*"
             },
-            url: "/api/logout"
+            url: this._host + "/api/logout"
         });
 
         ajaxPromise.fail(function (XHR, textStatus) {
@@ -83,16 +68,11 @@
         return ajaxPromise;
     }
 
-    /**
-     * DAO Interface. Register user.
-     * @param {object} useremail username userlastnames userpassword useradmin
-     * @return the entity or String (Promise)
-     */
     RemoteUserDaoHandler.prototype.registerUser = function (data) {
 
         var ajaxPromise = $.ajax({
             type: "POST",
-            url: "/api/registeruser",
+            url: this._host + "/api/registeruser",
             headers: {
                 "Accept": "*/*"
             },
@@ -106,16 +86,11 @@
         return ajaxPromise;
     }
 
-    /**
-     * DAO Interface. Update user.
-     * @param {object} username userlastnames userpassword
-     * @return the entity or String (Promise)
-     */
     RemoteUserDaoHandler.prototype.updateUser = function (data) {
 
         var ajaxPromise = $.ajax({
             type: "POST",
-            url: "/api/updateuser",
+            url: this._host + "/api/updateuser",
             headers: {
                 "Accept": "*/*"
             },
@@ -129,9 +104,11 @@
         return ajaxPromise;
     }
 
+
     // --------- /DAO Interface Implementation --------- //
 
     brite.RemoteUserDaoHandler = RemoteUserDaoHandler;
+
 
 })(jQuery);
 

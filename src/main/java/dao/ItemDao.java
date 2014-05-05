@@ -8,6 +8,7 @@ import java.util.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import models.Tgroup;
 import models.Titem;
@@ -81,10 +82,15 @@ public class ItemDao {
         EntityManager entityManager = entityManagerProvider.get();
         Boolean ok = false;
 
-        try {
-            Titem item = (Titem) getItemById(itemid);
-            entityManager.remove(item);
+        try { 
+          
+            Query q = entityManager.createQuery("DELETE FROM Titem t WHERE itemid = :itemid");  
+            q.setParameter("itemid", itemid);  
+
+            q.executeUpdate(); 
+
             ok = true;
+            
         } catch (PersistenceException e) {
             logger.get().info(this.toString() + " -- " + itemid + " -- Delete item failed!!");
         }
@@ -93,26 +99,26 @@ public class ItemDao {
 
     }
 
-    @Transactional
-    public Collection<Titem> getChanges(Tgroup group, Date lastmodif) {
-
-        Collection<Titem> itemsCollection = group.getTitemCollection();
-
-        try {
-
-            for (Titem item : itemsCollection) {
-                if (item.getItemlastmodif().compareTo(lastmodif) > 0) {
-                    item.setChanges(Boolean.TRUE);
-                } else {
-                    item.setChanges(Boolean.FALSE);
-                }
-            }
-
-        } catch (NoResultException e) {
-            logger.get().info(this.toString() + " No items by group found!!");
-        }
-
-        return itemsCollection;
-    }
+//    @Transactional
+//    public Collection<Titem> getChanges(Tgroup group, Date lastmodif) {
+//
+//        Collection<Titem> itemsCollection = group.getTitemCollection();
+//
+//        try {
+//
+//            for (Titem item : itemsCollection) {
+//                if (item.getItemlastmodif().compareTo(lastmodif) > 0) {
+//                    item.setChanges(Boolean.TRUE);
+//                } else {
+//                    item.setChanges(Boolean.FALSE);
+//                }
+//            }
+//
+//        } catch (NoResultException e) {
+//            logger.get().info(this.toString() + " No items by group found!!");
+//        }
+//
+//        return itemsCollection;
+//    }
 
 }

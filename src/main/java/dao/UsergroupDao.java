@@ -26,51 +26,128 @@ public class UsergroupDao {
     UserDao userDao;
 
     @Transactional
-    public Tusergroup joinGroup(String useremail, String groupcodestr) {
+    public Tuser linkGroup(String useremail, String groupcodestr) {
 
         EntityManager entityManager = entityManagerProvider.get();
-        Tusergroup userGroup = null;
+        Tusergroup userGroup;
         Tuser user = (Tuser) userDao.getUserByEmail(useremail);
         Tgroup group = (Tgroup) groupDao.getGroupByHashedGroupCode(groupcodestr);
 
         try {
 
-            if ((user == null) || (group == null)) {
-                userGroup = null;
-            } else {
+            if ((user != null) && (group != null)) {
                 Date date = new Date();
                 userGroup = new Tusergroup(group.getGroupcode(), user.getUserid());
                 userGroup.setTuser(user);
                 userGroup.setTgroup(group);
-                userGroup.setUsertreatlastmodif(date);
-                Short treat = new Short("0"); // Initial treat for user
-                userGroup.setUsertreat(treat);
+                userGroup.setUsertraitlastmodif(date);
+                Short trait = new Short("0"); // Initial trait for user
+                userGroup.setUsertrait(trait);
                 entityManager.persist(userGroup);
             }
 
         } catch (PersistenceException e) {
-            logger.get().info(this.toString() + " -- " + useremail + " -- " + groupcodestr + " -- Joinnig group failed!!");
+            logger.get().info(this.toString() + " -- " + useremail + " -- " + groupcodestr + " -- Linking group failed!!");
+            user = null;
         }
 
-        return userGroup;
+        return user;
     }
 
     @Transactional
-    public Collection<Tusergroup> getUserGroupsByUser(Tuser user) {
+    public Tuser unlinkGroup(String useremail, String groupcodestr) {
 
         EntityManager entityManager = entityManagerProvider.get();
-        Collection<Tusergroup> usergroupCollection = null;
+        
+        Tgroup group = (Tgroup) groupDao.getGroupByHashedGroupCode(groupcodestr);
+        Tuser user = (Tuser) userDao.getUserByEmail(useremail);
+
+        Tusergroup userGroup;
 
         try {
 
-            TypedQuery q = entityManager.createNamedQuery("Tusergroup.findByUserid", Tusergroup.class);
-            usergroupCollection = (Collection<Tusergroup>) q.setParameter("userid", user.getUserid()).getResultList();
+            userGroup = getUserGroup(useremail, group.getGroupcode());
 
-        } catch (NoResultException e) {
-            logger.get().info(this.toString() + " -- " + user.getUseremail() + " -- No groups by user found!!");
+            user.getTusergroupCollection().remove(userGroup);
+            group.getTusergroupCollection().remove(userGroup);
+
+            entityManager.persist(user);
+            entityManager.persist(group);
+            entityManager.remove(userGroup);
+
+        } catch (PersistenceException e) {
+            logger.get().info(this.toString() + " -- " + useremail + " -- " + groupcodestr + " -- UnLinking group failed!!");
+            user = null;
         }
 
-        return usergroupCollection;
+        return user;
     }
 
+    @Transactional
+    public Tuser updateUserTrait(String useremail, Integer groupcode, Short usertrait) {
+
+        EntityManager entityManager = entityManagerProvider.get();
+
+         Tusergroup userGroup;
+         Tuser user;
+
+        try {
+
+            userGroup = getUserGroup(useremail, groupcode);
+
+            userGroup.setUsertrait(usertrait);
+            entityManager.persist(userGroup);
+            
+            user = userGroup.getTuser();
+
+        } catch (PersistenceException e) {
+            logger.get().info(this.toString() + " -- " + useremail + " -- " + groupcode + " -- Update user trait failed!!");
+            user = null;
+        }
+
+        return user;
+
+    }
+    
+    @Transactional
+    public Tusergroup getUserGroup(String useremail, Integer groupcode) {
+
+        EntityManager entityManager = entityManagerProvider.get();
+        
+        Tuser user = (Tuser) userDao.getUserByEmail(useremail);
+        Tgroup group = (Tgroup) groupDao.getGroupByGroupCode(groupcode);
+
+        Tusergroup userGroup = null;
+
+        try {
+
+            TypedQuery q = entityManager.createNamedQuery("Tusergroup.findByUseridAndGroupcode", Tusergroup.class);
+            q.setParameter("userid", user.getUserid());
+            q.setParameter("groupcode", group.getGroupcode());
+            userGroup = (Tusergroup) q.getSingleResult();
+            
+        } catch (PersistenceException e) {
+            logger.get().info(this.toString() + " -- " + user.getUseremail() + " -- " + group.getGroupcode() + " -- Get UserGroup failed!!");
+        }
+        
+        return userGroup;
+    }
+
+//    @Transactional
+//    public Collection<Tusergroup> getGroupsByUser(Tuser user) {
+//
+//        EntityManager entityManager = entityManagerProvider.get();
+//        Collection<Tusergroup> usergroupCollection = null;
+//
+//        try {
+//
+//            TypedQuery q = entityManager.createNamedQuery("Tusergroup.findByUserid", Tusergroup.class);
+//            usergroupCollection = (Collection<Tusergroup>) q.setParameter("userid", user.getUserid()).getResultList();
+//
+//        } catch (NoResultException e) {
+//            logger.get().info(this.toString() + " -- " + user.getUseremail() + " -- No groups by user found!!");
+//        }
+//
+//        return usergroupCollection;
+//    }
 }

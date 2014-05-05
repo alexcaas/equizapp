@@ -8,18 +8,24 @@
             return render("tmpl-UserLoginView");
         },
 
+        init: function (data, config) {
+
+        },
+
         postDisplay: function (data, config) {
+
+            $("#bread-crumb").text("Login");
 
             // Side menu
             $(".mobile-menu").prop("disabled", true);
 
             // Back
             $("#top-menu-back-button").addClass("hide").removeClass("show");
+            $("#side-menu-back-button").addClass("disabled");
             // Groups
             $("#side-menu-groups-button").addClass("disabled");
             // Profile
             $("#top-menu-profile-button").addClass("hide").removeClass("show");
-            $("#side-menu-profile-button").addClass("disabled");
             // Close
             $("#top-menu-sesclose-button").addClass("hide").removeClass("show");
             $("#side-menu-sesclose-button").addClass("disabled");
@@ -29,9 +35,8 @@
         },
 
         destroy: function () {
-
+            $(".close").trigger("btap");
         },
-
 
         events: {
 
@@ -55,7 +60,6 @@
                 $(".MainView-subView").bEmpty();
                 brite.display("RegisterUserView", $(".MainView-subView"));
             }
-
         }
 
     });
@@ -66,22 +70,25 @@
         var view = this;
         var $inputemail = view.$el.find("#user-email");
         var $inputpass = view.$el.find("#user-password");
-        return main.userDao.userLogin({
+        daos.userDao.userLogin({
             useremail: $inputemail.val(),
             password: $inputpass.val()
-        }).pipe(function (result) {
+        }).done(function (result) {
 
             // Login error
             if ($.cookie("EQUIZ_FLASH") == "error=postloginfail") {
                 main.showError(result);
-            } else { //Groups View
-                main.currentUserEmail = result.useremail;
-                main.currentUserAdmin = result.useradmin;
+            } else {
+                $.cookie("SESSION_OK", $inputemail.val(), {
+                    expires: 1
+                });
+                view.$el.trigger("USER_CHANGE", result);
                 $(".MainView-subView").bEmpty();
                 brite.display("GroupsView", $(".MainView-subView"));
             }
         })
 
     };
+
 
 })(jQuery);

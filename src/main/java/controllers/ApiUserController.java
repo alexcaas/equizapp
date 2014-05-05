@@ -44,7 +44,7 @@ public class ApiUserController extends BaseController {
             context.getSession().put("admin", isAdmin);
             context.getFlashScope().success("postloginok");
             user.setUserpassword(""); // No password sent to client
-            return Results.json().render(user);
+            return Results.json().render(this.parseUser(user));
         } else {
             context.getFlashScope().error("postloginfail");
             return Results.text().renderRaw(this.getMsg("login.postLoginFail", context));
@@ -69,7 +69,7 @@ public class ApiUserController extends BaseController {
             return Results.text().renderRaw(this.getMsg("user.getUserByEmailJsonFail", context));
         } else {
             user.setUserpassword(""); // No password sent to client
-            return Results.json().render(user);
+            return Results.json().render(this.parseUser(user));
         }
 
     }
@@ -92,7 +92,8 @@ public class ApiUserController extends BaseController {
                 this.postLoginJson(useremail, userpassword, context);
                 user.setUserpassword(""); // No password sent to client
                 context.getFlashScope().success("postregisteruserok");
-                return Results.json().render(user);
+                return Results.json().render(this.parseUser(user));
+                //return Results.json().render(user);
             } else {
                 context.getFlashScope().error("postregisteruserfail");
                 return Results.text().renderRaw(this.getMsg("user.postRegisterUserFail", context));
@@ -112,7 +113,7 @@ public class ApiUserController extends BaseController {
         if (user != null) {
             user.setUserpassword(""); // No password sent to client
             context.getFlashScope().error("postupdateuserok");
-            return Results.json().render(user);
+            return Results.json().render(this.parseUser(user));
         } else {
             context.getFlashScope().error("postupdateuserfail");
             return Results.text().renderRaw(this.getMsg("user.postUpdateUserFail", context));

@@ -52,7 +52,8 @@ public class Routes implements ApplicationRoutes {
         router.DELETE().route("/api/deletegroup/{codestr}").with(ApiGroupController.class, "deleteGroup");
         
         /// USERGROUP API
-        router.POST().route("/api/joingroup").with(ApiUserGroupController.class, "postJoinGroupJson");
+        router.POST().route("/api/linkgroup").with(ApiUserGroupController.class, "postLinkGroupJson");
+        router.POST().route("/api/unlinkgroup").with(ApiUserGroupController.class, "postUnLinkGroupJson");
         
         /// ITEM API
         router.POST().route("/api/newitem").with(ApiItemController.class, "postNewItemAndAnswersJson");
@@ -60,9 +61,10 @@ public class Routes implements ApplicationRoutes {
         router.DELETE().route("/api/deleteitem/{itemid}").with(ApiItemController.class, "deleteItem");
         
         /// SYNC API
-        router.POST().route("/api/userchanges").with(ApiSyncController.class, "postUserChangesJson");
-        router.POST().route("/api/groupchanges").with(ApiSyncController.class, "postGroupChangesJson");
-
+//        router.POST().route("/api/userchanges").with(ApiSyncController.class, "postUserChangesJson");
+//        router.POST().route("/api/groupchanges").with(ApiSyncController.class, "postGroupChangesJson");
+//        router.POST().route("/api/updatetrait").with(ApiSyncController.class, "postUpdateUserTrait");
+        router.POST().route("/api/syncuser").with(ApiSyncController.class, "postUserSyncJson");
  
         ///////////////////////////////////////////////////////////////////////
         // Assets (pictures / javascript)

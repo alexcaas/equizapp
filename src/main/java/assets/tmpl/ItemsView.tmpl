@@ -1,0 +1,26 @@
+<script id="tmpl-ItemsView" type="text/html">
+
+    <div class="ItemsView">
+               
+        <ul class="list-group voffsettop4">
+          <li class="list-group-item list-group-item-info cursor-pointer" id="new-item-li">
+                <a><span class="glyphicon glyphicon-plus">&nbsp;</span>Nuevo Item</a>     
+          </li>
+
+          {{#each items}}
+              <li class="list-group-item" data-entity="Item" data-entity-id="{{this.itemid}}">
+                  
+                  <section class="items-section cursor-pointer">
+                      <span id="delete-item" class="glyphicon glyphicon-remove pull-right blue"></span>
+                      <a id = "itemclick">
+                        <span class="glyphicon glyphicon-list-alt">&nbsp;</span>{{this.itemstring}}
+                      </a>
+                  </section>
+                  
+              </li>
+          {{/each}}
+        </ul>
+
+    </div>
+
+</script>
