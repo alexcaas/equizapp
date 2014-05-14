@@ -58,5 +58,10 @@ public class BaseController {
         return Results.ok();
 
     }
+    
+     public Result getCheckConnection(){
+     
+         return Results.text().renderRaw("OK");
+     }
 
 }

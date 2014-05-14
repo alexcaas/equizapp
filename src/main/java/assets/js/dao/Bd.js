@@ -43,7 +43,7 @@ database.execSQL = function (sql, params, successFun, errorFun) {
     if (!errorFun) {
         // Default result function reports errors.
         errorFun = function (error) {
-            // TODO: Uncomment if you want error messages.
+            // Uncomment if you want error messages.
             //alert("Query Error: " + error.message);
         };
     }
@@ -68,12 +68,16 @@ database.execSQL = function (sql, params, successFun, errorFun) {
 
 database.initializeDb = function () {
 
-    database.execSQL("CREATE TABLE tgroup (groupcode, groupname, groupcodestr, groupitemsnumber, usertrait)");
-    database.execSQL("CREATE TABLE titem (itemid, groupcode, itemstring, itemdifficulty)");
-    database.execSQL("CREATE TABLE tanswer (answerid, groupcode, itemid, answerstring, answercorrect)");
-    database.execSQL("CREATE TABLE tlastsync (lastsync TIMESTAMP)");
-    database.execSQL("INSERT INTO tlastsync VALUES (?)", [0]);
-
+    database.execSQL("CREATE TABLE IF NOT EXISTS tgroup (groupcode, groupname, groupcodestr, groupitemsnumber, usertrait, usertraitlastmodif)");
+    database.execSQL("CREATE TABLE IF NOT EXISTS titem (itemid, groupcode, itemstring, itemdifficulty)");
+    database.execSQL("CREATE TABLE IF NOT EXISTS tanswer (answerid, groupcode, itemid, answerstring, answercorrect)");
+    database.execSQL("CREATE TABLE IF NOT EXISTS tgroupsync (groupcodestr, operation)");
+    database.execSQL("CREATE TABLE IF NOT EXISTS tlastsync (lastsync TIMESTAMP)");
+    database.execSQL("SELECT * FROM tgroup", []).done(function (result) {
+        if (result.rows.length < 1) {
+            database.execSQL("INSERT INTO tlastsync VALUES (?)", [0]);
+        }
+    });
 };
 
 database.deleteTablesDb = function () {
@@ -81,6 +85,11 @@ database.deleteTablesDb = function () {
     database.execSQL("DROP TABLE IF EXISTS tgroup");
     database.execSQL("DROP TABLE IF EXISTS titem");
     database.execSQL("DROP TABLE IF EXISTS tanswer");
+    database.execSQL("DROP TABLE IF EXISTS tgroupsync");
     database.execSQL("DROP TABLE IF EXISTS tlastsync");
 
 };
+
+
+//database.deleteTablesDb();
+database.initializeDb();

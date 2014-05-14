@@ -2,122 +2,126 @@ var sync = sync || {};
 
 (function () {
 
-    //
-    sync.sync = function (useremail) {
-
-
-
-
-        sync.syncUser(useremail).done(function (result) {
-
-
-        })
-
-
-    };
-
     // 
     sync.sync = function (useremail) {
 
-        //        {
-        //            "useremail": "jimena@email.com",
-        //            "lastsyncdate": 23432432423,
-        //            "SyncGroups": [{
-        //                    "groupcode": 40,
-        //                    "operation": "link",
-        //                    "usertrait": 10
-        //                },
-        //                {
-        //                    "groupcode": 15,
-        //                    "operation": "link",
-        //                    "usertrait": 7
-        //                }]
-        //    
-        //        }
-
-        var progress = $.Deferred();
+        var promise = $.Deferred();
 
         var user = {};
         user["useremail"] = useremail;
 
         var groups = [];
 
-        database.execSQL("SELECT lastsync FROM tlastsync", [], function (resultlastsync) {
+        database.execSQL("SELECT lastsync FROM tlastsync", []).done(function (resultlastsync) {
             var row = resultlastsync.rows.item(0);
 
             user["lastsyncdate"] = row['lastsync'];
 
-            database.execSQL("SELECT * FROM tgroup", [], function (resultgroup) {
+            database.execSQL("SELECT * FROM tgroupsync", []).done(function (resultgroupssync) {
 
-                for (var i = 0; i < resultgroup.rows.length; ++i) {
-                    var rowgroup = resultgroup.rows.item(i);
+                for (var i = 0; i < resultgroupssync.rows.length; ++i) {
+                    var rowgroupsync = resultgroupssync.rows.item(i);
 
                     groups.push({
-                        "groupcode": rowgroup['groupcode'],
-                        "operation": rowgroup['operation'],
-                        "usertrait": rowgroup['usertrait']
+                        "groupcodestr": rowgroupsync['groupcodestr'],
+                        "operation": rowgroupsync['operation'],
+                        "usertrait": -1,
+                        "usertraitlastmodif": -1
                     });
+
                 };
 
-                user["SyncGroups"] = groups;
+                database.execSQL("SELECT * FROM tgroup", []).done(function (resultgroup) {
 
-                var ajaxPromise = $.ajax({
-                    type: "POST",
-                    contentType: "application/json",
-                    url: conf.host + "/api/syncuser",
-                    headers: {
-                        "Accept": "*/*"
-                    },
-                    data: JSON.stringify(user)
-                });
+                    for (var i = 0; i < resultgroup.rows.length; ++i) {
+                        var rowgroup = resultgroup.rows.item(i);
 
-                ajaxPromise.fail(function (XHR, textStatus) {
-                    throw "Something failed getting data from the server - " + textStatus;
-                });
-
-                ajaxPromise.done(function (result) {
-
-                    var count = 0;
-
-                    // Login error
-                    if ($.cookie("EQUIZ_FLASH") == "error=postsyncfail") {
-                        main.showError(result);
-                    } else {
-
-                        $.each(result, function (key, obj) {
-                            if (obj.hasOwnProperty("tgroup")) {
-                                count++;
-                            }
+                        groups.push({
+                            "groupcodestr": rowgroup['groupcodestr'],
+                            "operation": "",
+                            "usertrait": rowgroup['usertrait'],
+                            "usertraitlastmodif": rowgroup['usertraitlastmodif']
                         });
+                    };
 
+                    user["SyncGroups"] = groups;
 
+                    var ajaxPromise = $.ajax({
+                        type: "POST",
+                        contentType: "application/json",
+                        url: conf.host + "/api/syncuser",
+                        headers: {
+                            "Accept": "*/*"
+                        },
+                        data: JSON.stringify(user)
+                    });
 
-                        $.each(result, function (key, obj) {
+                    ajaxPromise.fail(function (XHR, textStatus) {
+                        promise.reject(textStatus);
+                        throw "Something failed getting data from the server - " + textStatus;
+                    });
 
-                            daos.groupDao.deleteGroup(obj.tgroup.groupcode).done(function (result3) {
+                    ajaxPromise.done(function (result) {
 
-                                daos.groupDao.insertGroup(obj).done(function (result4) {
+                        var count = 0;
+
+                        // Login error
+                        if ($.cookie("EQUIZ_FLASH") == "error=postsyncfail") {
+                            main.showError(result);
+                            promise.reject(textStatus);
+                        } else {
+
+                            var groups = result.SyncGroups;
+
+                            $.each(groups, function (key, obj) {
+                                if (obj.hasOwnProperty("tgroup")) {
+                                    count++;
+                                }
+                            });
+
+                            if (count == 0) {
+                                promise.resolve("ok");
+                            };
+
+                            daos.groupDao.deleteAllGroups();
+
+                            $.each(groups, function (key, obj) {
+
+                                daos.groupDao.insertGroup(obj).done(function () {
                                     count--;
-                                    if (count === 0) {
-                                        // TODO actualizar lastsyncdate
-                                        database.execSQL('UPDATE tlastsync SET lastsync = "' + result.lastsyncdate + '"', []).done(function (result2) {
-                                            progress.resolve("ok");
 
+                                    if (count == 0) {
+                                        // 
+                                        database.execSQL('DELETE FROM tlastsync').done(function () {
+                                            database.execSQL("INSERT INTO tlastsync VALUES (?)", [result.lastsyncdate]).done(function () {
+
+                                                database.execSQL('DELETE FROM tgroupsync').done(function () {
+                                                    mobile.showSync();
+                                                    promise.resolve("ok");
+
+                                                });
+                                            });
                                         });
                                     }
                                 });
                             });
+                        }
+                    });
 
-                        });
-
-
-                    }
                 });
-
             });
         });
 
-        return progress;
+        return promise;
     };
+
+    sync.getLastSync = function () {
+        var promise = $.Deferred();
+        database.execSQL('SELECT * FROM tlastsync').done(function (result) {
+            var row = result.rows.item(0);
+            promise.resolve(row['lastsync']);
+        })
+        return promise;
+    }
 
 })(jQuery);

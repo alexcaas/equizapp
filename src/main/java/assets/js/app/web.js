@@ -1,3 +1,7 @@
+$(document).ready(function () {
+    brite.display("MainView", "#pageBody");
+});
+
 var conf = conf || {};
 
 (function () {

@@ -4,9 +4,7 @@ import javax.persistence.EntityManager;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
-import java.util.Collection;
 import java.util.Date;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import models.Tgroup;
@@ -58,7 +56,7 @@ public class UsergroupDao {
     public Tuser unlinkGroup(String useremail, String groupcodestr) {
 
         EntityManager entityManager = entityManagerProvider.get();
-        
+
         Tgroup group = (Tgroup) groupDao.getGroupByHashedGroupCode(groupcodestr);
         Tuser user = (Tuser) userDao.getUserByEmail(useremail);
 
@@ -88,17 +86,19 @@ public class UsergroupDao {
 
         EntityManager entityManager = entityManagerProvider.get();
 
-         Tusergroup userGroup;
-         Tuser user;
+        Tusergroup userGroup;
+        Tuser user = null;
 
         try {
 
             userGroup = getUserGroup(useremail, groupcode);
 
-            userGroup.setUsertrait(usertrait);
-            entityManager.persist(userGroup);
-            
-            user = userGroup.getTuser();
+            if (userGroup != null) {
+                userGroup.setUsertrait(usertrait);
+                entityManager.persist(userGroup);
+
+                user = userGroup.getTuser();
+            }
 
         } catch (PersistenceException e) {
             logger.get().info(this.toString() + " -- " + useremail + " -- " + groupcode + " -- Update user trait failed!!");
@@ -108,12 +108,12 @@ public class UsergroupDao {
         return user;
 
     }
-    
+
     @Transactional
     public Tusergroup getUserGroup(String useremail, Integer groupcode) {
 
         EntityManager entityManager = entityManagerProvider.get();
-        
+
         Tuser user = (Tuser) userDao.getUserByEmail(useremail);
         Tgroup group = (Tgroup) groupDao.getGroupByGroupCode(groupcode);
 
@@ -125,11 +125,11 @@ public class UsergroupDao {
             q.setParameter("userid", user.getUserid());
             q.setParameter("groupcode", group.getGroupcode());
             userGroup = (Tusergroup) q.getSingleResult();
-            
+
         } catch (PersistenceException e) {
             logger.get().info(this.toString() + " -- " + user.getUseremail() + " -- " + group.getGroupcode() + " -- Get UserGroup failed!!");
         }
-        
+
         return userGroup;
     }
 

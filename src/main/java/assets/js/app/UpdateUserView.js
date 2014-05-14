@@ -91,7 +91,7 @@
                         main.showError(result);
                     } else {
                         main.showInfo("Actualizado correctamente");
-                        view.$el.trigger("USER_CHANGE", result);
+                        $(document).trigger("USER_CHANGE", result);
                     }
                 })
 

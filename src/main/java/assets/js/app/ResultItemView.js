@@ -5,6 +5,18 @@
         create: function (data, config) {
             var view = this;
             main.currentView = view;
+            if (data) {
+                view.total = data.total;
+                view.success = data.success;
+                view.fails = data.fails;
+                return render("tmpl-ResultItemView", {
+                    total: view.total,
+                    success: view.success,
+                    fails: view.fails,
+                    successpercentage: (view.success * 100 / view.total),
+                    failpercentage: (view.fails * 100 / view.total)
+                });
+            }
             return render("tmpl-ResultItemView");
         },
 
@@ -39,7 +51,7 @@
 
             // on Ok item
             "btap; [data-action='gostart']": function (event) {
-                this.$el.trigger("GROUPS_CHANGE");
+                $(document).trigger("GROUPS_CHANGE");
             }
         }
 

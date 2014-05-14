@@ -54,6 +54,8 @@ public class Routes implements ApplicationRoutes {
         /// USERGROUP API
         router.POST().route("/api/linkgroup").with(ApiUserGroupController.class, "postLinkGroupJson");
         router.POST().route("/api/unlinkgroup").with(ApiUserGroupController.class, "postUnLinkGroupJson");
+        router.POST().route("/api/postusertraitgroup").with(ApiUserGroupController.class, "postUserTraitGroup");
+        router.POST().route("/api/postupdateusertraitgroup").with(ApiUserGroupController.class, "postUpdateUserTraitGroup");
         
         /// ITEM API
         router.POST().route("/api/newitem").with(ApiItemController.class, "postNewItemAndAnswersJson");
@@ -61,9 +63,7 @@ public class Routes implements ApplicationRoutes {
         router.DELETE().route("/api/deleteitem/{itemid}").with(ApiItemController.class, "deleteItem");
         
         /// SYNC API
-//        router.POST().route("/api/userchanges").with(ApiSyncController.class, "postUserChangesJson");
-//        router.POST().route("/api/groupchanges").with(ApiSyncController.class, "postGroupChangesJson");
-//        router.POST().route("/api/updatetrait").with(ApiSyncController.class, "postUpdateUserTrait");
+        router.GET().route("/api/checkconn").with(BaseController.class, "getCheckConnection");
         router.POST().route("/api/syncuser").with(ApiSyncController.class, "postUserSyncJson");
  
         ///////////////////////////////////////////////////////////////////////

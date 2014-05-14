@@ -6,16 +6,21 @@ import com.google.inject.Inject;
 import models.SyncObject;
 import ninja.Result;
 import ninja.Results;
-
 import com.google.inject.Singleton;
+import dao.GroupDao;
 import dao.UserDao;
 import dao.UsergroupDao;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import models.SyncGroup;
+import models.SyncObjectServer;
+import models.Tgroup;
 import models.Tuser;
 import models.Tusergroup;
+import ninja.utils.LoggerProvider;
 
 @Singleton
 public class ApiSyncController extends BaseController {
@@ -24,93 +29,68 @@ public class ApiSyncController extends BaseController {
     UserDao userDao;
     @Inject
     UsergroupDao userGroupDao;
+    @Inject
+    GroupDao groupDao;
+    @Inject
+    LoggerProvider logger;
 
     public Result postUserSyncJson(SyncObject syncObject) throws ParseException {
- 
 
-//        Date lastSyncDateStr = syncObject.getLastsyncdate();
-//        //Date lastSyncDate = parseDate(lastSyncDateStr);
-//        Date ceroDate = new Date();
-//        ceroDate.setTime(0);
-//        Date nowDate = new Date();
+        SyncObjectServer syncObjServer = new SyncObjectServer();
 
-        Tuser user = userDao.getUserByEmail(syncObject.getUseremail());
-        Collection<Tusergroup> usergroupCollection = user.getTusergroupCollection();
-
-        List<SyncGroup> syncGroups;
-        syncGroups = syncObject.getSyncGroups();
+        try {
         
-        for (int i=0; i<syncGroups.size(); i++){
-            SyncGroup syncgroup = (SyncGroup) syncGroups.get(i);
-            int groupcode = syncgroup.getGroupcode();
-            short usertrait = syncgroup.getUsertrait();
-            userGroupDao.updateUserTrait(syncObject.getUseremail(), groupcode, usertrait); 
+            Date lastSyncDateStr = syncObject.getLastsyncdate();
+            Date nowDate = new Date();
+            List<SyncGroup> syncGroups;
+            syncGroups = syncObject.getSyncGroups();
+            Boolean all = false;
+            Tuser user = null;
+
+            for (int i = 0; i < syncGroups.size(); i++) {
+                SyncGroup syncgroup = (SyncGroup) syncGroups.get(i);
+
+                String groupcodestr = syncgroup.getGroupcodestr();
+                Tgroup group = groupDao.getGroupByHashedGroupCode(groupcodestr);
+                String operation = syncgroup.getOperation();
+
+                // Trait
+                short usertrait = syncgroup.getUsertrait();
+                if (usertrait > -1) {
+                    userGroupDao.updateUserTrait(syncObject.getUseremail(), group.getGroupcode(), usertrait);
+                }
+                // link or unlink
+                if (operation.equals("link")) {
+                    userGroupDao.linkGroup(syncObject.getUseremail(), groupcodestr);
+                    all = true;
+                }
+                if (operation.equals("unlink")) {
+                    userGroupDao.unlinkGroup(syncObject.getUseremail(), groupcodestr);
+                    all = true;
+                }
+            }
+
+            user = userDao.getUserByEmail(syncObject.getUseremail());
+
+            Collection<Tusergroup> usergroupCollection = user.getTusergroupCollection();
+
+            List<Tusergroup> usergroups = new ArrayList<>();
+
+            for (Tusergroup usergroup : usergroupCollection) {
+                Tgroup group = usergroup.getTgroup();
+                usergroups.add(usergroup);
+            }
+
+            syncObjServer.setUseremail(syncObject.getUseremail());
+            syncObjServer.setLastsyncdate(nowDate);
+            syncObjServer.setSyncGroups(usergroups);
+            logger.get().error("AAAAA PASO 4");
+
+        } catch (Exception e) {
+            logger.get().info(this.toString() + " -- Error synchronization!!");
         }
-        
-//        Boolean exists = false;
-//        
-//        for (Tusergroup usergroup : usergroupCollection) {
-//            
-//            for (int i=0; i<syncGroups.size(); i++){
-//               SyncGroup syncgroup = (SyncGroup) syncGroups.get(i);
-//               if (usergroup.getTgroup().getGroupcode() == syncgroup.getGroupcode()){
-//                    exists = true;
-//                }
-//            }
-//            if (!exists){
-//                usergroupCollection.remove(usergroup);
-//            } else {
-//            exists = false;}
-//        }
 
-//        if (lastSyncDate.equals(ceroDate)){
-//            
-//        }
-        return Results.json().render(usergroupCollection);
+        return Results.json().render(syncObjServer);
     }
 
-//    public Result postUserChangesJson(@Param("useremail") String useremail,
-//            @Param("lastmodif") String lastmodif,
-//            Context context) throws ParseException {
-//
-//        Tuser user = userDao.getChanges(useremail, this.parseDate(lastmodif));
-//        
-//        if (user == null) {
-//            context.getFlashScope().error("postuserchangesfail");
-//        } else {
-//            user.setUserpassword(""); // No password sent to client
-//        }
-//
-//        return Results.json().render(this.parseUser(user));
-//    }
-//
-//    public Result postGroupChangesJson(@Param("groupcode") String groupcode,
-//            @Param("lastmodif") String lastmodif,
-//            Context context) throws ParseException {
-//
-//        Tgroup group = groupDao.getChanges(groupcode, this.parseDate(lastmodif));
-//        
-//        if (group == null) {
-//            context.getFlashScope().error("postgroupchangesfail");
-//        } 
-//        
-//        return Results.json().render(group);        
-//        
-//    }
-//    
-//    public Result postUpdateUserTrait(@Param("useremail") String useremail,
-//            @Param("groupcode") String groupcode,
-//            @Param("usertrait") String usertrait,
-//            Context context) throws ParseException {
-//        
-//        Tuser user = userGroupDao.updateUserTrait(useremail, Integer.parseInt(groupcode), Short.parseShort(usertrait));
-//        
-//        if (user == null) {
-//            context.getFlashScope().error("postupdateusertraitfail");
-//            return Results.text().renderRaw(this.getMsg("user.postUpdateUserTraitFail", context));
-//        } else {
-//            user.setUserpassword(""); // No password sent to client
-//            return Results.json().render(this.parseUser(user));
-//        }
-//    }
 }

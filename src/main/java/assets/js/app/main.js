@@ -4,14 +4,6 @@ brite.config.jsPath = conf.assets + "js/app/";
 brite.config.tmplPath = conf.assets + "tmpl/";
 //brite.config.css = conf.assets + "css/";
 
-
-$(document).ready(initialize);
-
-function initialize() {
-
-    brite.display("MainView", "#pageBody");
-};
-
 Handlebars.templates = Handlebars.templates || {};
 
 function render(templateName, data) {
@@ -50,6 +42,30 @@ var main = main || {};
     // currentGroupItems
     main.currentGroupItems = null;
 
+    // TAI
+    var traitRange = 10;
+    main.taiB = 0;
+    main.tai = new Tai(traitRange);
+    main.taiItems = [];
+    // two fictitious items to have variability in responses from the beggining of the test.
+    main.resetTaiItems = function () {
+        main.taiItems = [];
+        // has made a very easy
+        main.taiItems.push({
+            b: -((traitRange - 1) / 2),
+            success: 1
+        });
+        // failed difficult one
+        main.taiItems.push({
+            b: ((traitRange - 1) / 2),
+            success: 0
+        });
+    }
+    main.resetTaiItems();
+
+    main.itemsnumber = 1;
+    // END TAI
+
     // Popover
     main.popover = false;
 
@@ -67,6 +83,39 @@ var main = main || {};
         return objects;
     }
 
+    main.internetConnection = function internetConnection() {
+        var ajaxPromise = $.ajax({
+            type: "GET",
+            async: false,
+            url: conf.host + "/api/checkconn",
+            headers: {
+                "Accept": "*/*"
+            }
+        });
+
+        return ajaxPromise;
+    }
+
+    main.checkInternetConnection = function checkInternetConnection() {
+        var promise = $.Deferred();
+
+        main.internetConnection().done(function (result) {
+            if (result == "OK") {
+                promise.resolve(result);
+            } else {
+                main.showError("No hay conexión");
+                promise.reject();
+            }
+        }).fail(function (result) {
+            main.showError("No hay conexión");
+            progress.reject();
+        });
+
+
+        return promise;
+
+    }
+
     // Dialogs and alerts
     main.showError = function showError(message) {
 
@@ -77,7 +126,7 @@ var main = main || {};
         }
         window.setTimeout(function () { // hide alert message
             $(".close ").trigger("btap");
-        }, 3000);
+        }, 4000);
     }
 
     main.showInfo = function showInfo(message) {
@@ -89,7 +138,7 @@ var main = main || {};
         }
         window.setTimeout(function () { // hide alert message
             $(".close").trigger("btap");
-        }, 3000);
+        }, 4000);
     }
 
     BootstrapDialog.confirm = function (message, callback) {

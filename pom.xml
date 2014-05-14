@@ -145,30 +145,24 @@
         
         <dependency>
             <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId> 
-            <version>9.2-1003-jdbc4</version>
+            <artifactId>postgresql</artifactId> 
+            <version>9.3-1101-jdbc41</version>
         </dependency>
 	
         <!-- If you want to deploy to a war please -->
         <!-- comment ninja-standalone dependency and  -->
         <!-- uncomment the dependency for ninja-servlet -->
-        <!--<dependency>
+        <!-- <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-servlet</artifactId>
             <version>${ninja.version}</version>
-        </dependency>-->
+        </dependency> -->
         
         
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-standalone</artifactId>
             <version>${ninja.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>freemarker-gae</artifactId>
-                    <groupId>org.freemarker</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         
        <!-- <dependency>

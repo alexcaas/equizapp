@@ -73,7 +73,7 @@
                             main.showError(result);
                         } else {
                             // refresh user-groups
-                            view.$el.trigger("GROUPS_CHANGE");
+                            $(document).trigger("GROUPS_CHANGE");
                         }
                     })
                 }

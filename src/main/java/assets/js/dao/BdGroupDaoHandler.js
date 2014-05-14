@@ -38,33 +38,87 @@
 
         });
 
+
     }
 
     BdGroupDaoHandler.prototype.deleteGroup = function (groupcode) {
 
-        return database.execSQL("DELETE FROM tgroup WHERE groupcode=?", [groupcode]).done(function (result) {
+        var promise = $.Deferred();
+
+        database.execSQL("DELETE FROM tgroup WHERE groupcode=?", [groupcode]).done(function (result) {
             database.execSQL("DELETE FROM titem WHERE groupcode=?", [groupcode]).done(function (result) {
-                database.execSQL("DELETE FROM tanswer WHERE groupcode=?", [groupcode]);
+                database.execSQL("DELETE FROM tanswer WHERE groupcode=?", [groupcode]).done(function () {
+                    promise.resolve("ok");
+                });
+            });
+        });
+        return promise;
+    }
+
+    BdGroupDaoHandler.prototype.deleteAllGroups = function () {
+
+        var promise = $.Deferred();
+
+        database.execSQL("DELETE FROM tgroup", []).done(function (result) {
+            database.execSQL("DELETE FROM titem", []).done(function (result) {
+                database.execSQL("DELETE FROM tanswer", []).done(function () {
+                    promise.resolve("ok");
+                });
             });
         });
 
-    }
-
-    BdGroupDaoHandler.prototype.linkGroup = function (groupcode) {
-
-        return database.execSQL("INSERT INTO tgroupsync VALUES (?, ?, ?)", [groupcodestr, "link", null]);
+        return promise;
 
     }
 
-    BdGroupDaoHandler.prototype.unlinkGroup = function (groupcode) {
+    BdGroupDaoHandler.prototype.linkGroup = function (data) {
 
-        return database.execSQL("INSERT INTO tgroupsync VALUES (?, ?, ?)", [groupcodestr, "unlink", null]);
+        return database.execSQL("INSERT INTO tgroupsync VALUES (?, ?)", [data.codestr, "link"]);
+
 
     }
 
-    BdGroupDaoHandler.prototype.userTraitGroup = function (groupcode, usertrait) {
+    BdGroupDaoHandler.prototype.unLinkGroup = function (data) {
 
-        return database.execSQL("INSERT INTO tgroupsync VALUES (?, ?, ?)", [groupcodestr, null, usertrait]);
+        var promise = $.Deferred();
+
+        database.execSQL("INSERT INTO tgroupsync VALUES (?, ?)", [data.codestr, "unlink"]).done(function () {
+            database.execSQL("SELECT * FROM tgroup WHERE groupcodestr=?", [data.codestr]).done(function (resultgroup) {
+                if (resultgroup.rows.length > 0) {
+                    var rowgroup = resultgroup.rows.item(0);
+                    var groupcode = rowgroup['groupcode'];
+                    database.execSQL("DELETE FROM tgroup WHERE groupcode=?", [groupcode]).done(function (result) {
+                        database.execSQL("DELETE FROM titem WHERE groupcode=?", [groupcode]).done(function (result) {
+                            database.execSQL("DELETE FROM tanswer WHERE groupcode=?", [groupcode]).done(function () {
+                                promise.resolve("ok");
+                            });
+                        });
+                    });
+                }
+            });
+        });
+        return promise;
+    }
+
+    BdGroupDaoHandler.prototype.updateUserTraitGroup = function (data) {
+        // data: useremail, groupcode, usertrait
+
+        return database.execSQL("UPDATE tgroup SET usertrait=" + data.usertrait + " WHERE groupcode=" + data.groupcode);
+
+    }
+
+    BdGroupDaoHandler.prototype.getUserTraitGroup = function (data) {
+
+        // data: useremail, groupcode
+
+        var promise = $.Deferred();
+
+        database.execSQL("SELECT usertrait FROM tgroup WHERE groupcode=?", [data.groupcode]).done(function (result) {
+            var row = result.rows.item(0);
+            promise.resolve(row[usertrait]);
+        });
+
+        return promise;
 
     }
 
@@ -77,21 +131,25 @@
         // groupcode, groupname, groupcodestr, groupitemsnumber, usertrait
         database.execSQL("SELECT * FROM tgroup WHERE groupcode=" + groupcode, []).done(function (resultgroup) {
 
-            var rowgroup = resultgroup.rows.item(0);
+            if (resultgroup.rows.length > 0) {
 
-            group = $.extend({}, {
-                groupcode: rowgroup['groupcode'],
-                groupname: rowgroup['groupname'],
-                groupcodestr: rowgroup['groupcodestr'],
-                groupitemsnumber: rowgroup['groupitemsnumber'],
-                usertrait: rowgroup['usertrait'],
-                titemCollection: null
-            });
+                var rowgroup = resultgroup.rows.item(0);
 
-            daos.itemDao.getItems(groupcode).done(function (result) {
-                group["titemCollection"] = result;
-                promise.resolve(group);
-            });
+                group = $.extend({}, {
+                    groupcode: rowgroup['groupcode'],
+                    groupname: rowgroup['groupname'],
+                    groupcodestr: rowgroup['groupcodestr'],
+                    groupitemsnumber: rowgroup['groupitemsnumber'],
+                    usertrait: rowgroup['usertrait'],
+                    titemCollection: null
+                });
+
+                daos.itemDao.getItems(groupcode).done(function (result) {
+                    group["titemCollection"] = result;
+                    promise.resolve(group);
+                });
+
+            }
 
         });
 

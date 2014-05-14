@@ -35,7 +35,7 @@
         },
 
         destroy: function () {
-            $(".close").trigger("btap");
+            //$(".close").trigger("btap");
         },
 
         events: {
@@ -79,12 +79,21 @@
             if ($.cookie("EQUIZ_FLASH") == "error=postloginfail") {
                 main.showError(result);
             } else {
-                $.cookie("SESSION_OK", $inputemail.val(), {
-                    expires: 1
-                });
-                view.$el.trigger("USER_CHANGE", result);
-                $(".MainView-subView").bEmpty();
-                brite.display("GroupsView", $(".MainView-subView"));
+
+                if (conf.mobile == true && result.useradmin == true) {
+                    main.showError("Usuario registrado como administrador, debe acceder como alumno.");
+                } else {
+
+                    $.cookie("SESSION_OK", $inputemail.val());
+                    $(document).trigger("USER_CHANGE", result);
+
+                    if (conf.mobile == true) {
+                        $(document).trigger("SYNC");
+                    };
+
+                    $(".MainView-subView").bEmpty();
+                    brite.display("GroupsView", $(".MainView-subView"));
+                }
             }
         })
 

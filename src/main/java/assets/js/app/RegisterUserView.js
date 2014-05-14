@@ -67,21 +67,23 @@
         if ($useremail[0].validity.valid && $inputusername[0].validity.valid && $inputuserlastnames[0].validity.valid && $inputuserpasword[0].validity.valid && $inputuserretypepass[0].validity.valid) {
 
             if ($inputuserpasword.val() == $inputuserretypepass.val()) {
-                daos.userDao.registerUser({
-                    useremail: $useremail.val(),
-                    username: $inputusername.val(),
-                    userlastnames: $inputuserlastnames.val(),
-                    userpassword: $inputuserpasword.val(),
-                    useradmin: $inputuseradmin.is(':checked')
-                }).done(function (result) {
-                    if (($.cookie("EQUIZ_FLASH") == "error=postregisteruserfail") || ($.cookie("EQUIZ_FLASH") == "error=postregisteruseralreadyexists")) {
-                        main.showError(result);
-                    } else {
-                        view.$el.trigger("USER_CHANGE", result);
-                        $(".MainView-subView").bEmpty();
-                        brite.display("GroupsView", $(".MainView-subView"));
-                    }
-                })
+                main.checkInternetConnection().done(function (result) {
+                    daos.userDao.registerUser({
+                        useremail: $useremail.val(),
+                        username: $inputusername.val(),
+                        userlastnames: $inputuserlastnames.val(),
+                        userpassword: $inputuserpasword.val(),
+                        useradmin: $inputuseradmin.is(':checked')
+                    }).done(function (result) {
+                        if (($.cookie("EQUIZ_FLASH") == "error=postregisteruserfail") || ($.cookie("EQUIZ_FLASH") == "error=postregisteruseralreadyexists")) {
+                            main.showError(result);
+                        } else {
+                            $(document).trigger("USER_CHANGE", result);
+                            $(".MainView-subView").bEmpty();
+                            brite.display("GroupsView", $(".MainView-subView"));
+                        }
+                    })
+                });
             } else {
                 main.showError("Las contraseñas han de ser iguales");
             }

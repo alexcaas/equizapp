@@ -129,6 +129,46 @@
         return ajaxPromise;
     }
 
+    RemoteGroupDaoHandler.prototype.updateUserTraitGroup = function (data) {
+        // data: useremail, groupcode, usertrait
+
+        var ajaxPromise = $.ajax({
+            type: "POST",
+            url: this._host + "/api/postupdateusertraitgroup",
+            headers: {
+                "Accept": "*/*"
+            },
+            data: data
+        });
+
+        ajaxPromise.fail(function (XHR, textStatus) {
+            throw "Something failed getting data from the server - " + textStatus;
+        });
+
+        return ajaxPromise;
+
+    }
+
+    RemoteGroupDaoHandler.prototype.getUserTraitGroup = function (data) {
+        // data: useremail,groupcode
+
+        var ajaxPromise = $.ajax({
+            type: "POST",
+            url: this._host + "/api/postusertraitgroup",
+            headers: {
+                "Accept": "*/*"
+            },
+            data: data
+        });
+
+        ajaxPromise.fail(function (XHR, textStatus) {
+            throw "Something failed getting data from the server - " + textStatus;
+        });
+
+        return ajaxPromise;
+
+    }
+
     RemoteGroupDaoHandler.prototype.groupChanges = function (data) {
 
         var ajaxPromise = $.ajax({

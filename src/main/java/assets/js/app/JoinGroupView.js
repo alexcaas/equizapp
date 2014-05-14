@@ -65,7 +65,13 @@
                     main.showError(result);
                 } else {
                     // refresh user-groups
-                    view.$el.trigger("GROUPS_CHANGE");
+                    if (conf.mobile == true) {
+                        $(document).trigger("SYNC");
+                        $(".MainView-subView").bEmpty();
+                        brite.display("GroupsView", $(".MainView-subView"));
+                    } else {
+                        $(document).trigger("GROUPS_CHANGE");
+                    }
                 }
             })
         }

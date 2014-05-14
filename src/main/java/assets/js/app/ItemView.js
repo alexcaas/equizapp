@@ -46,6 +46,9 @@
             // Sync
             $("#side-menu-sync-button").removeClass("disabled");
 
+            //
+            $("#questionnumber").text(main.itemsnumber + "/" + main.currentGroup.groupitemsnumber);
+
         },
 
         destroy: function () {
@@ -77,10 +80,14 @@
 
         var view = this;
         var value = getValue();
+        view.answerCorrect = false;
 
         var answer = view.item.tanswerCollection[value].answercorrect
 
         if (answer == true || answer == "true") {
+
+            view.answerCorrect = true;
+
             var elem_answer = "answer-" + value;
             var elem_answer_label = "label[for='" + elem_answer + "']";
             var elem_img = "#span-ok-" + value;
@@ -90,6 +97,9 @@
             view.$el.find(elem_img).removeClass("hide");
 
         } else {
+
+            view.answerCorrect = false;
+
             var elem_correct;
             if (view.item.tanswerCollection[0].answercorrect) {
                 elem_correct = 0;
@@ -113,11 +123,18 @@
             view.$el.find(elem_answer_label_correct).addClass("green");
         }
 
-        view.$el.find("[data-action='okitem']").addClass("hide");
-        view.$el.find("[data-action='nextitem']").removeClass("hide");
-        view.$el.find("[data-action='finitem']").removeClass("hide");
+        if (main.currentGroup.groupitemsnumber == main.itemsnumber) {
+            view.$el.find("[data-action='okitem']").addClass("hide");
+            view.$el.find("[data-action='nextitem']").addClass("hide");
+            view.$el.find("[data-action='finitem']").removeClass("hide");
+        } else {
+            view.$el.find("[data-action='okitem']").addClass("hide");
+            view.$el.find("[data-action='nextitem']").removeClass("hide");
+            view.$el.find("[data-action='finitem']").addClass("hide");
+        }
 
         view.$el.find("input[name='answercorrect-radios']").attr("disabled", "disabled");
+        $("#questionnumber").text(main.itemsnumber + "/" + main.currentGroup.groupitemsnumber);
 
     };
 
@@ -134,8 +151,28 @@
     function doNextItem() {
 
         var view = this;
+        var success;
 
-        view.$el.trigger("NEXT_ITEM");
+        if (main.currentGroup.groupitemsnumber > main.itemsnumber) {
+            if (view.answerCorrect == true) {
+                success = 1;
+            } else {
+                success = 0;
+            }
+
+            // items = [{b: X, success: 1 or 0}, {b: Y, success: 1 or 0}, ..]
+            main.taiItems.push({
+                b: view.item.itemdifficulty,
+                success: success
+            });
+
+            main.taiB = main.tai.cmle(main.taiItems);
+            var nxtItem = main.tai.nextItem(main.currentGroupItems, main.taiB);
+            main.itemsnumber++;
+
+            $(document).trigger("NEXT_ITEM", nxtItem);
+
+        }
 
     };
 
@@ -143,7 +180,21 @@
 
         var view = this;
 
-        view.$el.trigger("FINISH_ITEMS");
+        main.itemsnumber = 1;
+
+        if (view.answerCorrect == true) {
+            success = 1;
+        } else {
+            success = 0;
+        }
+
+        // items = [{b: X, success: 1 or 0}, {b: Y, success: 1 or 0}, ..]
+        main.taiItems.push({
+            b: view.item.itemdifficulty,
+            success: success
+        });
+
+        $(document).trigger("FINISH_ITEMS");
 
     };
 

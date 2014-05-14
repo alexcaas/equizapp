@@ -23,7 +23,8 @@
                     <strong>Grupos</strong>
                 </a>
             </li>
-            <li id="side-menu-back-button" class="back disabled mobileapphide">
+            <hr>
+            <li id="side-menu-back-button" class="back disabled">
                 <a>
                     <span class="glyphicon glyphicon-share-alt">&nbsp;</span>
                     <strong>Volver</strong>
@@ -39,7 +40,7 @@
             <li id="side-menu-sync-button" class="syncro disabled hide mobileappshow">
                 <a>
                     <span class="glyphicon glyphicon-refresh">&nbsp;</span>
-                    <strong>Sincronizar ahora</strong>
+                    <strong>Sincronizar</strong>
                 </a>
             </li>
             <hr>
@@ -52,16 +53,14 @@
             <hr>
             <li class="disabled">
                 <a>
-                    <small>
-                        <span class="small glyphicon glyphicon-envelope">
-                        <em id="side-menu-useremail"></em>
-                    </small>
+                    <span class="small glyphicon glyphicon-envelope">
+                    <em id="side-menu-useremail"></em>
                 </a>
             </li>
             <li class="disabled hide mobileappshow">
                 <a>
-                    <small><span class="glyphicon glyphicon-cloud-upload"> Sincronizado:</small>
-                    <small><br><em class = "small" id="last-sync"></em></small>
+                    <span class="small glyphicon glyphicon-cloud-upload">
+                    <em class="small" id="last-sync"></em>
                 </a>
 
             </li>
@@ -90,6 +89,9 @@
         <div class="alert alert-danger alert-block fade error">
             <button type="button" class="close">x</button>
         </div>
+        
+        <div id="spin">
+        </div> 
         
         <div class="MainView-subView">
         </div>

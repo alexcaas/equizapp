@@ -46,7 +46,7 @@ public class ApiItemController extends BaseController {
             Context context) {
 
         try {
-
+        
             Short itemdifficultysi = Short.parseShort(itemdifficulty);
             Boolean answercorrect1bool = Boolean.parseBoolean(answercorrect1);
             Boolean answercorrect2bool = Boolean.parseBoolean(answercorrect2);
@@ -128,8 +128,6 @@ public class ApiItemController extends BaseController {
         
 
         Long itemidl = Long.parseLong(String.valueOf(itemid));
-        
-        logger.get().debug("zzzzzzz  " + itemidl);
 
         Boolean ok = itemDao.deleteItem(itemidl);
 

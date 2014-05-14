@@ -3,7 +3,6 @@ package dao;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -45,8 +44,11 @@ public class ItemDao {
         EntityManager entityManager = entityManagerProvider.get();
 
         try {
+
             Date lastmodif = new Date();
-            item.setItemlastmodif(lastmodif);
+            Tgroup group = item.getGroup();
+            group.setGrouplastmodif(lastmodif);
+            entityManager.merge(group);
             entityManager.persist(item);
 
         } catch (PersistenceException e) {
@@ -65,7 +67,9 @@ public class ItemDao {
         try {
 
             Date lastmodif = new Date();
-            item.setItemlastmodif(lastmodif);
+            Tgroup group = item.getGroup();
+            group.setGrouplastmodif(lastmodif);
+            entityManager.merge(group);
             entityManager.merge(item);
 
         } catch (PersistenceException e) {
@@ -83,6 +87,12 @@ public class ItemDao {
         Boolean ok = false;
 
         try { 
+            
+            Titem item = this.getItemById(itemid);
+            Date lastmodif = new Date();
+            Tgroup group = item.getGroup();
+            group.setGrouplastmodif(lastmodif);
+            entityManager.persist(group);
           
             Query q = entityManager.createQuery("DELETE FROM Titem t WHERE itemid = :itemid");  
             q.setParameter("itemid", itemid);  
@@ -98,27 +108,5 @@ public class ItemDao {
         return ok;
 
     }
-
-//    @Transactional
-//    public Collection<Titem> getChanges(Tgroup group, Date lastmodif) {
-//
-//        Collection<Titem> itemsCollection = group.getTitemCollection();
-//
-//        try {
-//
-//            for (Titem item : itemsCollection) {
-//                if (item.getItemlastmodif().compareTo(lastmodif) > 0) {
-//                    item.setChanges(Boolean.TRUE);
-//                } else {
-//                    item.setChanges(Boolean.FALSE);
-//                }
-//            }
-//
-//        } catch (NoResultException e) {
-//            logger.get().info(this.toString() + " No items by group found!!");
-//        }
-//
-//        return itemsCollection;
-//    }
 
 }

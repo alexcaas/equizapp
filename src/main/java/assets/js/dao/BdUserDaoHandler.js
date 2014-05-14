@@ -59,6 +59,7 @@
 
         var user = {};
         user["useremail"] = useremail;
+        user["useradmin"] = false; // always user
 
         var groups = [];
 
@@ -91,6 +92,24 @@
         });
 
         return promise;
+    }
+
+    BdUserDaoHandler.prototype.registerUser = function (data) {
+
+        var ajaxPromise = $.ajax({
+            type: "POST",
+            url: this._host + "/api/registeruser",
+            headers: {
+                "Accept": "*/*"
+            },
+            data: data
+        });
+
+        ajaxPromise.fail(function (XHR, textStatus) {
+            throw "Something failed getting data from the server - " + textStatus;
+        });
+
+        return ajaxPromise;
     }
 
     // --------- /DAO Interface Implementation --------- //

@@ -57,11 +57,7 @@
             //$(document).swipe("disable");
 
             if ($.cookie("SESSION_OK")) {
-                daos.userDao.getUserbyEmail($.cookie("SESSION_OK")).done(function (result) {
-                    main.currentUser = result;
-                    $(".MainView-subView").bEmpty();
-                    brite.display("GroupsView", $(".MainView-subView"));
-                })
+                $(document).trigger("GROUPS_CHANGE", $.cookie("SESSION_OK"));
             } else {
                 $(".MainView-subView").bEmpty();
                 brite.display("UserLoginView", $(".MainView-subView"));
@@ -82,6 +78,9 @@
         docEvents: {
 
             "USER_CHANGE": function (event, data) {
+                if (conf.mobile == true) {
+                    mobile.showSync();
+                }
                 main.currentUser = data;
                 $("#side-menu-useremail").text(main.currentUser.useremail);
             },
@@ -93,11 +92,15 @@
                 } else {
                     user_email = main.currentUser.useremail;
                 }
+                if (conf.mobile == true) {
+                    mobile.showSync();
+                }
                 daos.userDao.getUserbyEmail(user_email).done(function (result) {
                     main.currentUser = result;
                     $(".MainView-subView").bEmpty();
-                    brite.display("GroupsView", $(".MainView-subView"));
+                    return brite.display("GroupsView", $(".MainView-subView"));
                 })
+
             },
 
             "ITEMS_CHANGE": function (event, data) {
@@ -123,20 +126,86 @@
             },
 
             "NEXT_ITEM": function (event, data) {
-                if (data) {
-                    $(".MainView-subView").bEmpty();
-                    brite.display("ItemView", $(".MainView-subView"), main.currentGroupItems[0]);
-                } else {
+                if (main.currentGroupItems == null || main.currentGroupItems.length == 0) {
                     BootstrapDialog.alert("Este grupo no tiene preguntas");
                     $(".MainView-subView").bEmpty();
                     brite.display("GroupsView", $(".MainView-subView"));
+                } else if (main.currentGroupItems.length < main.currentGroup.groupitemsnumber) {
+                    BootstrapDialog.alert("Este grupo no tiene suficientes preguntas para realizar el test");
+                    $(".MainView-subView").bEmpty();
+                    brite.display("GroupsView", $(".MainView-subView"));
+                } else {
+                    if (data == "first") {
+                        var nxtItem;
+                        var data = {
+                            useremail: main.currentUser.useremail,
+                            groupcode: main.currentGroup.groupcode
+                        };
+                        var b = daos.groupDao.getUserTraitGroup(data).done(function (result) {
+                            main.taiB = parseInt(result);
+                            nxtItem = main.tai.nextItem(main.currentGroupItems, result);
+                            $(".MainView-subView").bEmpty();
+                            brite.display("ItemView", $(".MainView-subView"), nxtItem);
+                        })
+
+                    } else {
+                        $(".MainView-subView").bEmpty();
+                        brite.display("ItemView", $(".MainView-subView"), data);
+                    }
                 }
 
             },
 
             "FINISH_ITEMS": function (event, data) {
+                var success = 0;
+                var fails = 0;
+                $.each(main.taiItems, function (key, value) {
+                    if (value.success == 1) {
+                        success++;
+                    } else {
+                        fails++;
+                    }
+                });
+                // Reset
+                main.resetTaiItems();
+                // remember the two fictitious items
+                var data = {
+                    total: success + fails - 2,
+                    success: success - 1,
+                    fails: fails - 1
+                };
+
+                // Update trait
+                var traitdata = {
+                    useremail: main.currentUser.useremail,
+                    groupcode: main.currentGroup.groupcode,
+                    usertrait: main.taiB
+                }
+                daos.groupDao.updateUserTraitGroup(traitdata).done(function (result) {
+                    //main.showInfo("Se ha actualizado su nivel de conocimiento");
+                    $(document).trigger("USER_CHANGE", result);
+                });
+
+                main.taiB = 0;
+
                 $(".MainView-subView").bEmpty();
-                brite.display("ResultItemView", $(".MainView-subView"));
+                brite.display("ResultItemView", $(".MainView-subView"), data);
+            },
+
+            "SYNC": function (event, data) {
+                main.checkInternetConnection().done(function (result) {
+                    $('#spin').spin("modal");
+                    sync.sync(main.currentUser.useremail).done(function () {
+                        $(document).trigger("GROUPS_CHANGE");
+                        mobile.showSync();
+                        $('#spin').spin("modal");
+                        main.showInfo("Sincronizado");
+
+                    }).fail(function () {
+                        $('#spin').spin("modal");
+                        main.showError("No se ha podido sincronizar");
+                    });
+                });
             }
 
         },
@@ -170,11 +239,21 @@
             },
 
             // on Sincro
-            "btap; #side-menu-sync-button": doSync,
+            "btap; #side-menu-sync-button": function (event) {
+                var view = this;
+                if (!($(".syncro").hasClass("disabled"))) {
+                    // DO SYNC
+                    if (conf.mobile == true) {
+                        $(document).trigger("SYNC");
+                        $(".MainView-subView").bEmpty();
+                        brite.display("GroupsView", $(".MainView-subView"));
+                    };
+                }
+            },
 
             // on Profile
             "btap; .profile": function (event) {
-                if (!($(".profile").hasClass("disabled"))) {
+                if (!($("#top-menu-profile-button").hasClass("disabled"))) {
                     $(".MainView-subView").bEmpty();
                     brite.display("UpdateUserView", $(".MainView-subView"));
                 }
@@ -229,28 +308,28 @@
                     $.removeCookie("SESSION_OK")
 
                     //$(document).swipe("disable");
+                    if (conf.mobile == true) {
+                        BootstrapDialog.confirm('¿Seguro que quiere finalizar sesión?', function (result) {
+                            if (result) {
+                                daos.groupDao.deleteAllGroups();
+                                //Login View
+                                $(".MainView-subView").bEmpty();
+                                brite.display("UserLoginView", $(".MainView-subView"));
+                            }
+                        });
+                    } else {
+                        //Login View
+                        $(".MainView-subView").bEmpty();
+                        brite.display("UserLoginView", $(".MainView-subView"));
+                    }
 
-                    //Login View
-                    $(".MainView-subView").bEmpty();
-                    brite.display("UserLoginView", $(".MainView-subView"));
+
 
                 } else {
                     main.showError(result);
                 }
 
             })
-        }
-    };
-
-    // Manual Sync Function
-    function doSync() {
-        var view = this;
-        if (!($(".syncro").hasClass("disabled"))) {
-            // DO SYNC
-            sync.sync(main.currentUser.useremail).pipe(function (result) {
-                console.log(result);
-                mobile.lastSync = "15/04/2014 22:03";
-            });
         }
     };
 

@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -22,8 +21,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
@@ -38,7 +35,6 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Titem.findByItemid", query = "SELECT t FROM Titem t WHERE t.itemid = :itemid"),
     @NamedQuery(name = "Titem.findByItemstring", query = "SELECT t FROM Titem t WHERE t.itemstring = :itemstring"),
     @NamedQuery(name = "Titem.findByItemdifficulty", query = "SELECT t FROM Titem t WHERE t.itemdifficulty = :itemdifficulty"),
-    @NamedQuery(name = "Titem.findByItemlastmodif", query = "SELECT t FROM Titem t WHERE t.itemlastmodif = :itemlastmodif"),
     @NamedQuery(name = "Titem.findByGroupcode", query = "SELECT t FROM Titem t WHERE t.tgroup = :tgroup")})
 @JsonIdentityInfo(generator=ObjectIdGenerators.UUIDGenerator.class, property="@id")
 public class Titem implements Serializable {
@@ -59,9 +55,6 @@ public class Titem implements Serializable {
     @Basic(optional = false)
     @Column(name = "itemdifficulty")
     private short itemdifficulty;
-    @Column(name = "itemlastmodif")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date itemlastmodif;
     @JoinColumn(name = "groupcode", referencedColumnName = "groupcode")
     @ManyToOne(optional = false, fetch=FetchType.EAGER)
     private Tgroup tgroup;
@@ -102,14 +95,6 @@ public class Titem implements Serializable {
 
     public void setItemdifficulty(short itemdifficulty) {
         this.itemdifficulty = itemdifficulty;
-    }
-
-    public Date getItemlastmodif() {
-        return itemlastmodif;
-    }
-
-    public void setItemlastmodif(Date itemlastmodif) {
-        this.itemlastmodif = itemlastmodif;
     }
 
     public Tgroup getGroup() {

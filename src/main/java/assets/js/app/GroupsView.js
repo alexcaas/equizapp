@@ -6,6 +6,7 @@
             var view = this;
             main.currentView = view;
             main.currentGroup = null;
+            main.currentGroupItems = null;
             view.groups = main.currentUserGroups(main.currentUser);
             return render("tmpl-GroupsView", {
                 groups: view.groups
@@ -33,6 +34,7 @@
             $("#side-menu-groups-button").addClass("disabled");
             // Profile
             $("#top-menu-profile-button").addClass("show").removeClass("hide");
+            $("#side-menu-profile-button").removeClass("disabled");
             // Close
             $("#top-menu-sesclose-button").addClass("show").removeClass("hide");
             $("#side-menu-sesclose-button").removeClass("disabled");
@@ -44,18 +46,26 @@
             if (main.currentUser.useradmin == true) {
                 $(".admin").addClass("show").removeClass("hide");
                 $(".user").addClass("hide").removeClass("show");
-                $(".copy-groupcodestr").each(function () {
-                    $(this).zclip({
-                        path: conf.assets + 'js/lib/ZeroClipboard.swf',
-                        copy: function () {
-                            return $(this).text();
-                        },
-                        afterCopy: function (event) {
-                            main.showInfo("Código copiado al portapapeles");
-                        }
-                    })
-                });
+                $('.clippable').clipboard({
 
+                    /* Return copying string data to clipboard */
+                    copy: function () {
+                        return $(this).text();
+                    },
+
+                    /* Process pasted string data from clipboard */
+                    paste: function (data) {
+                        // $(this).text(data);
+                    },
+
+                    /* Process delete signal */
+                    del: function () {
+                        // $(this).remove();
+                    }
+
+                    // "cut" command is "copy" + "del" combination
+
+                });
             } else {
                 $(".admin").addClass("hide").removeClass("show");
                 $(".user").addClass("show").removeClass("hide");
@@ -83,7 +93,7 @@
         },
 
         destroy: function () {
-            $(".close").trigger("btap");
+            //$(".close").trigger("btap");
             $("#groupcodestr").popover('hide');
         },
 
@@ -145,7 +155,7 @@
                     $(".MainView-subView").bEmpty();
                     brite.display("ItemsView", $(".MainView-subView"));
                 } else {
-                    view.$el.trigger("NEXT_ITEM");
+                    $(document).trigger("NEXT_ITEM", "first");
                 }
             }
         })
@@ -161,7 +171,7 @@
             if ($.cookie("EQUIZ_FLASH") == "error=deletegroupfail") {
                 main.showError(result);
             } else {
-                view.$el.trigger("GROUPS_CHANGE");
+                $(document).trigger("GROUPS_CHANGE");
             }
         })
 
@@ -186,7 +196,7 @@
                     if ($.cookie("EQUIZ_FLASH") == "error=postunlinkgroupfail") {
                         main.showError(result);
                     } else {
-                        view.$el.trigger("GROUPS_CHANGE");
+                        $(document).trigger("GROUPS_CHANGE");
                     }
                 })
             }

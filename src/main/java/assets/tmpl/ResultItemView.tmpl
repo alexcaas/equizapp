@@ -1,13 +1,13 @@
 <script id="tmpl-ResultItemView" type="text/html">
     <div class="ResultItemView">
         
-        <div id="alert-correct" class="alert alert-success">
-          24 respuestas correctas
+        <div id="alert-correct" class="alert alert-info" style="text-align:center;">
+            <strong>{{success}}</strong> respuesta(s) correctas de <strong>{{total}}</strong>
         </div>
         
         <div class="progress">
-          <div id="progress-correct" class="progress-bar progress-bar-success" style="width: 60%;"></div>
-          <div id="progress-wrong" class="progress-bar progress-bar-danger" style="width: 40%"></div>
+          <div id="progress-correct" class="progress-bar progress-bar-success" style="width: {{successpercentage}}%;"></div>
+          <div id="progress-wrong" class="progress-bar progress-bar-danger" style="width: {{failpercentage}}%"></div>
         </div>
         
         <div class="form-group">

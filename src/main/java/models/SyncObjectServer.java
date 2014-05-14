@@ -19,14 +19,14 @@ import java.util.Date;
     "lastsyncdate",
     "SyncGroups"
 })
-public class SyncObject {
+public class SyncObjectServer {
 
     @JsonProperty("useremail")
     private String useremail;
     @JsonProperty("lastsyncdate")
     private Date lastsyncdate;
     @JsonProperty("SyncGroups")
-    private List<SyncGroup> syncGroups = new ArrayList<SyncGroup>();
+    private List<Tusergroup> syncGroups = new ArrayList<Tusergroup>();
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("useremail")
@@ -50,12 +50,12 @@ public class SyncObject {
     }
 
     @JsonProperty("SyncGroups")
-    public List<SyncGroup> getSyncGroups() {
+    public List<Tusergroup> getSyncGroups() {
         return syncGroups;
     }
 
     @JsonProperty("SyncGroups")
-    public void setSyncGroups(List<SyncGroup> syncGroups) {
+    public void setSyncGroups(List<Tusergroup> syncGroups) {
         this.syncGroups = syncGroups;
     }
 

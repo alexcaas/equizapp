@@ -9,12 +9,10 @@ import com.google.inject.persist.Transactional;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-import models.Titem;
 import ninja.utils.LoggerProvider;
 
 public class GroupDao {
@@ -112,32 +110,5 @@ public class GroupDao {
         return ok;
 
     }
-
-//    @Transactional
-//    public Tgroup getChanges(String groupcode, Date lastmodif) {
-//
-//        Tgroup group = null;
-//
-//        try {
-//
-//            group = this.getGroupByGroupCode(Integer.parseInt(groupcode));
-//
-//            if (group.getGrouplastmodif().compareTo(lastmodif) > 0) {
-//                group.setChanges(Boolean.TRUE);
-//            } else {
-//                group.setChanges(Boolean.FALSE);
-//            }
-//
-//            Collection<Titem> itemsCollection;
-//            itemsCollection = itemDao.getChanges(group, lastmodif);
-//
-//            group.setTitemCollection(itemsCollection);
-//
-//        } catch (NoResultException e) {
-//            logger.get().info(this.toString() + " No groups by user found!!");
-//        }
-//
-//        return group;
-//    }
 
 }

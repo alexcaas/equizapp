@@ -80,7 +80,7 @@
                 if ($.cookie("EQUIZ_FLASH") == "error=postnewitemandanswersfail") {
                     main.showError(result);
                 } else {
-                    view.$el.trigger("ITEMS_CHANGE");
+                    $(document).trigger("ITEMS_CHANGE");
                 }
             })
         }

@@ -88,7 +88,7 @@
             if ($.cookie("EQUIZ_FLASH") == "error=deleteitemfail") {
                 main.showError(result);
             } else {
-                view.$el.trigger("ITEMS_CHANGE");
+                $(document).trigger("ITEMS_CHANGE");
             }
         })
 
