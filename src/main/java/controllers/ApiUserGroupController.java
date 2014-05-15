@@ -77,7 +77,7 @@ public class ApiUserGroupController extends BaseController {
 
         Integer groupcode = Integer.parseInt(groupcodestr);
 
-        Tusergroup userGroup = usergroupDao.getUserGroup(useremail, 12);
+        Tusergroup userGroup = usergroupDao.getUserGroup(useremail, groupcode);
 
         String userTraitStr = userGroup.getUsertrait().toString();
 

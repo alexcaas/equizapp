@@ -29,6 +29,8 @@
 
         postDisplay: function (data, config) {
 
+            var view = this;
+
             $('textarea').autosize();
 
             $("#bread-crumb").text(main.currentGroup.groupname);
@@ -48,6 +50,7 @@
 
             //
             $("#questionnumber").text(main.itemsnumber + "/" + main.currentGroup.groupitemsnumber);
+            $("#questiondific").text("Dificultad: " + view.item.itemdifficulty);
 
         },
 
@@ -135,6 +138,7 @@
 
         view.$el.find("input[name='answercorrect-radios']").attr("disabled", "disabled");
         $("#questionnumber").text(main.itemsnumber + "/" + main.currentGroup.groupitemsnumber);
+        $("#questiondific").text("Dificultad: " + view.item.itemdifficulty);
 
     };
 
