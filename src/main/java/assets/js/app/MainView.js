@@ -56,8 +56,9 @@
 
             //$(document).swipe("disable");
 
-            if ($.cookie("SESSION_OK")) {
-                $(document).trigger("GROUPS_CHANGE", $.cookie("SESSION_OK"));
+            var session = window.localStorage.getItem("SESSION_OK");
+            if (session) {
+                $(document).trigger("GROUPS_CHANGE", session);
             } else {
                 $(".MainView-subView").bEmpty();
                 brite.display("UserLoginView", $(".MainView-subView"));
@@ -96,7 +97,12 @@
                     mobile.showSync();
                 }
                 daos.userDao.getUserbyEmail(user_email).done(function (result) {
-                    main.currentUser = result;
+                    if (main.currentUser == null) {
+                        main.currentUser = result;
+                    } else {
+                        main.currentUser.tusergroupCollection = result.tusergroupCollection;
+                    }
+
                     $(".MainView-subView").bEmpty();
                     return brite.display("GroupsView", $(".MainView-subView"));
                 })
@@ -107,8 +113,8 @@
                 daos.groupDao.getGroup(main.currentGroup.groupcode).done(function (result) {
                     if (result) {
                         // error
-                        if ($.cookie("EQUIZ_FLASH") == "error=getgroupbygroupcodefail") {
-                            main.showError(result);
+                        if (result == "getGroupByGroupCodeFail") {
+                            main.showError("El grupo no se ha podido obtener");
                         } else {
                             main.currentGroup = result;
                             main.currentGroupItems = main.currentGroup.titemCollection;
@@ -182,14 +188,14 @@
                     usertrait: main.taiB
                 }
                 daos.groupDao.updateUserTraitGroup(traitdata).done(function (result) {
-                    //main.showInfo("Se ha actualizado su nivel de conocimiento");
-                    $(document).trigger("USER_CHANGE", result);
+                    main.showInfo("Se ha actualizado su nivel de conocimiento");
                 });
 
                 main.taiB = 0;
 
                 $(".MainView-subView").bEmpty();
                 brite.display("ResultItemView", $(".MainView-subView"), data);
+
             },
 
             "SYNC": function (event, data) {
@@ -303,9 +309,10 @@
             daos.userDao.userLogout().done(function (result) {
 
                 // Login error
-                if ($.cookie("EQUIZ_FLASH") == "success=getlogoutok") {
+                if (result == "getLogoutOk") {
 
-                    $.removeCookie("SESSION_OK")
+                    //$.removeCookie("SESSION_OK");
+                    window.localStorage.removeItem("SESSION_OK");
 
                     //$(document).swipe("disable");
                     if (conf.mobile == true) {

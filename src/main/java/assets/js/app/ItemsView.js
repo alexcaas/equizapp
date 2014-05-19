@@ -85,8 +85,8 @@
 
         daos.itemDao.deleteItem(item.id).done(function (result) {
             // error
-            if ($.cookie("EQUIZ_FLASH") == "error=deleteitemfail") {
-                main.showError(result);
+            if (result == "deleteItemFail") {
+                main.showError("El Ítem no se ha podido borrar");
             } else {
                 $(document).trigger("ITEMS_CHANGE");
             }

@@ -20,7 +20,7 @@
 
         var group = obj.tgroup;
 
-        database.execSQL("INSERT INTO tgroup VALUES (?, ?, ?, ?, ?)", [group.groupcode, group.groupname, group.groupcodestr, group.groupitemsnumber, obj.usertrait]).done(function (result) {
+        database.execSQL("INSERT INTO tgroup VALUES (?, ?, ?, ?, ?, ?)", [group.groupcode, group.groupname, group.groupcodestr, group.groupitemsnumber, obj.usertrait, obj.usertraitlastmodif]).done(function (result) {
 
             $.each(group.titemCollection, function (key1, item) {
 
@@ -113,9 +113,9 @@
 
         var promise = $.Deferred();
 
-        database.execSQL("SELECT usertrait FROM tgroup WHERE groupcode=?", [data.groupcode]).done(function (result) {
+        database.execSQL("SELECT * FROM tgroup WHERE groupcode=?", [data.groupcode]).done(function (result) {
             var row = result.rows.item(0);
-            promise.resolve(row[usertrait]);
+            promise.resolve(row.usertrait);
         });
 
         return promise;

@@ -66,8 +66,8 @@ var sync = sync || {};
                         var count = 0;
 
                         // Login error
-                        if ($.cookie("EQUIZ_FLASH") == "error=postsyncfail") {
-                            main.showError(result);
+                        if (result == "postSyncFail") {
+                            main.showError("Error sincronizando");
                             promise.reject(textStatus);
                         } else {
 
@@ -81,9 +81,9 @@ var sync = sync || {};
 
                             if (count == 0) {
                                 promise.resolve("ok");
-                            };
-
-                            daos.groupDao.deleteAllGroups();
+                            } else {
+                                daos.groupDao.deleteAllGroups();
+                            }
 
                             $.each(groups, function (key, obj) {
 
@@ -118,8 +118,12 @@ var sync = sync || {};
     sync.getLastSync = function () {
         var promise = $.Deferred();
         database.execSQL('SELECT * FROM tlastsync').done(function (result) {
-            var row = result.rows.item(0);
-            promise.resolve(row['lastsync']);
+            if (result.rows.length > 0) {
+                var row = result.rows.item(0);
+                promise.resolve(row.lastsync);
+            } else {
+                promise.resolve(0);
+            }
         })
         return promise;
     }

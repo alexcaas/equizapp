@@ -75,8 +75,10 @@
                         userpassword: $inputuserpasword.val(),
                         useradmin: $inputuseradmin.is(':checked')
                     }).done(function (result) {
-                        if (($.cookie("EQUIZ_FLASH") == "error=postregisteruserfail") || ($.cookie("EQUIZ_FLASH") == "error=postregisteruseralreadyexists")) {
-                            main.showError(result);
+                        if (result == "postRegisterUserFail") {
+                            main.showError("El registro del nuevo usuario ha fallado");
+                        } else if (result == "postRegisterUserAlreadyExists") {
+                            main.showError("El email ya se encuentra registrado");
                         } else {
                             $(document).trigger("USER_CHANGE", result);
                             $(".MainView-subView").bEmpty();

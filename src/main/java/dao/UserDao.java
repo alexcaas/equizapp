@@ -48,6 +48,8 @@ public class UserDao {
 
         Boolean isValid = false;
         Boolean passOk;
+        
+        if (useremail.equals("") || password.equals("")){return isValid;}
 
         try {
             Tuser user = (Tuser) this.getUserByEmail(useremail);

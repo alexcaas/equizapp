@@ -20,6 +20,7 @@ import models.SyncObjectServer;
 import models.Tgroup;
 import models.Tuser;
 import models.Tusergroup;
+import ninja.Context;
 import ninja.utils.LoggerProvider;
 
 @Singleton
@@ -34,7 +35,7 @@ public class ApiSyncController extends BaseController {
     @Inject
     LoggerProvider logger;
 
-    public Result postUserSyncJson(SyncObject syncObject) throws ParseException {
+    public Result postUserSyncJson(SyncObject syncObject, Context context) throws ParseException {
 
         SyncObjectServer syncObjServer = new SyncObjectServer();
 
@@ -84,10 +85,11 @@ public class ApiSyncController extends BaseController {
             syncObjServer.setUseremail(syncObject.getUseremail());
             syncObjServer.setLastsyncdate(nowDate);
             syncObjServer.setSyncGroups(usergroups);
-            logger.get().error("AAAAA PASO 4");
 
         } catch (Exception e) {
             logger.get().info(this.toString() + " -- Error synchronization!!");
+            context.getFlashScope().error("postsyncfail");
+            return Results.text().renderRaw(this.getMsg("sync.postSyncFail", context));
         }
 
         return Results.json().render(syncObjServer);

@@ -8,6 +8,7 @@ var conf = conf || {};
 
     // Config
     conf.mobile = false;
+    conf.mobilehybrid = false;
     conf.assets = "/assets/";
     conf.host = "";
 

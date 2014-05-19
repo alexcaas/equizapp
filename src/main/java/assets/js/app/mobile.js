@@ -2,24 +2,6 @@ $(document).ready(function () {
     brite.display("MainView", "#pageBody");
 });
 
-
-////The "deviceready" event is sent when the system
-////has finished loading.
-//document.addEventListener(
-//    "deviceready",
-//    function () {
-//        brite.display("MainView", "#pageBody");
-//    },
-//    true);
-//
-////Close the application when the back key is pressed.
-//document.addEventListener(
-//    "backbutton",
-//    function () {
-//        mosync.app.exit();
-//    },
-//    true);
-
 var mobile = mobile || {};
 var conf = conf || {};
 

@@ -11,7 +11,7 @@ body {
     -ms-user-select: none;
     user-select: none;
 }
-.mobileappshow {} .mobileapphide {} #mobilemenu {
+.mobileappshow {} #mobilemenu {
     display: none;
 }
 .btnmenu-right {

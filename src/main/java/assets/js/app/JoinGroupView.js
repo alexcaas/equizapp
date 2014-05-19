@@ -61,8 +61,8 @@
                 useremail: main.currentUser.useremail,
                 codestr: $groupcodestr.val().toUpperCase()
             }).done(function (result) {
-                if ($.cookie("EQUIZ_FLASH") == "error=postlinkgroupfail") {
-                    main.showError(result);
+                if (result == "postLinkGroupFail") {
+                    main.showError("No se ha podido unir al grupo. Compruebe que el código es correcto");
                 } else {
                     // refresh user-groups
                     if (conf.mobile == true) {

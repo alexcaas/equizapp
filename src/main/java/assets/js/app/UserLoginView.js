@@ -70,34 +70,38 @@
         var view = this;
         var $inputemail = view.$el.find("#user-email");
         var $inputpass = view.$el.find("#user-password");
-        daos.userDao.userLogin({
-            useremail: $inputemail.val(),
-            password: $inputpass.val()
-        }).done(function (result) {
 
-            // Login error
-            if ($.cookie("EQUIZ_FLASH") == "error=postloginfail") {
-                main.showError(result);
-            } else {
+        if ($inputemail[0].validity.valid && $inputpass[0].validity.valid) {
+            main.checkInternetConnection().done(function (result) {
+                daos.userDao.userLogin({
+                    useremail: $inputemail.val(),
+                    password: $inputpass.val()
+                }).done(function (result) {
 
-                if (conf.mobile == true && result.useradmin == true) {
-                    main.showError("Usuario registrado como administrador, debe acceder como alumno.");
-                } else {
+                    // Login error
+                    if (result == "postLoginFail") {
+                        main.showError("Usuario y/o contraseña incorrecto(s)");
+                    } else {
 
-                    $.cookie("SESSION_OK", $inputemail.val());
-                    $(document).trigger("USER_CHANGE", result);
+                        if (conf.mobile == true && result.useradmin == true) {
+                            main.showError("Usuario registrado como administrador, debe acceder como alumno.");
+                        } else {
 
-                    if (conf.mobile == true) {
-                        $(document).trigger("SYNC");
-                    };
+                            window.localStorage.setItem("SESSION_OK", $inputemail.val());
+                            $(document).trigger("USER_CHANGE", result);
 
-                    $(".MainView-subView").bEmpty();
-                    brite.display("GroupsView", $(".MainView-subView"));
-                }
-            }
-        })
+                            if (conf.mobile == true) {
+                                $(document).trigger("SYNC");
+                            };
 
-    };
+                            $(".MainView-subView").bEmpty();
+                            brite.display("GroupsView", $(".MainView-subView"));
+                        }
+                    }
+                });
+            });
+        }
+    }
 
 
 })(jQuery);

@@ -83,37 +83,39 @@ var main = main || {};
         return objects;
     }
 
-    main.internetConnection = function internetConnection() {
-        var ajaxPromise = $.ajax({
-            type: "GET",
-            async: false,
-            url: conf.host + "/api/checkconn",
-            headers: {
-                "Accept": "*/*"
-            }
-        });
+    main.checkInternetConnection = function () {
+        var promise;
 
-        return ajaxPromise;
-    }
+        if (conf.mobilehybrid == true) {
 
-    main.checkInternetConnection = function checkInternetConnection() {
-        var promise = $.Deferred();
+            promise = $.Deferred();
+            var networkState = navigator.network.connection.type;
 
-        main.internetConnection().done(function (result) {
-            if (result == "OK") {
-                promise.resolve(result);
-            } else {
+            if (networkState == Connection.NONE) {
                 main.showError("No hay conexión");
                 promise.reject();
+            } else {
+                promise.resolve("ok");
             }
-        }).fail(function (result) {
-            main.showError("No hay conexión");
-            progress.reject();
-        });
 
+        } else {
+            promise = $.ajax({
+                type: "GET",
+                timeout: 3000,
+                async: false,
+                cache: false,
+                url: conf.host + "/api/checkconn",
+                headers: {
+                    "Accept": "*/*"
+                }
+            });
+
+            promise.fail(function (XHR, textStatus) {
+                main.showError("No hay conexión");
+            });
+        }
 
         return promise;
-
     }
 
     // Dialogs and alerts

@@ -146,8 +146,8 @@
 
         daos.groupDao.getGroup(group.id).done(function (result) {
             // error
-            if ($.cookie("EQUIZ_FLASH") == "error=getgroupbygroupcodefail") {
-                main.showError(result);
+            if (result == "getGroupByGroupCodeFail") {
+                main.showError("El grupo no se ha podido obtener");
             } else {
                 main.currentGroup = result;
                 main.currentGroupItems = main.currentGroup.titemCollection;
@@ -168,8 +168,8 @@
 
         daos.groupDao.deleteGroup(group.id).done(function (result) {
             // error
-            if ($.cookie("EQUIZ_FLASH") == "error=deletegroupfail") {
-                main.showError(result);
+            if (result == "deleteGroupFail") {
+                main.showError("El grupo no se ha podido borrar");
             } else {
                 $(document).trigger("GROUPS_CHANGE");
             }
@@ -183,8 +183,8 @@
 
         daos.groupDao.getGroup(group.id).done(function (result) {
             // error
-            if ($.cookie("EQUIZ_FLASH") == "error=getgroupbygroupcodefail") {
-                main.showError(result);
+            if (result == "getGroupByGroupCodeFail") {
+                main.showError("El grupo no se ha podido obtener");
             } else {
                 main.currentGroup = result;
                 main.currentGroupItems = main.currentGroup.titemCollection;
@@ -193,8 +193,8 @@
                     codestr: main.currentGroup.groupcodestr
                 }).done(function (result) {
                     // error
-                    if ($.cookie("EQUIZ_FLASH") == "error=postunlinkgroupfail") {
-                        main.showError(result);
+                    if (result == "postUnLinkGroupFail") {
+                        main.showError("No se ha podido borrar el grupo");
                     } else {
                         $(document).trigger("GROUPS_CHANGE");
                     }

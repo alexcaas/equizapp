@@ -77,8 +77,8 @@
                 answerstring3: $answerc.val(),
                 answercorrect3: $radioc.is(':checked')
             }).done(function (result) {
-                if ($.cookie("EQUIZ_FLASH") == "error=postnewitemandanswersfail") {
-                    main.showError(result);
+                if (result == "postNewItemAndAnswersFail") {
+                    main.showError("El Ítem no ha podido ser creado");
                 } else {
                     $(document).trigger("ITEMS_CHANGE");
                 }

@@ -62,15 +62,15 @@
                 groupname: $groupname.val(),
                 groupitemsnumber: $groupitemsnumber.val()
             }).done(function (result) {
-                if ($.cookie("EQUIZ_FLASH") == "error=postnewgroupfail") {
-                    main.showError(result);
+                if (result == "postNewGroupFail") {
+                    main.showError("El grupo no ha podido ser creado");
                 } else {
                     daos.groupDao.linkGroup({
                         useremail: main.currentUser.useremail,
                         codestr: result.groupcodestr
                     }).done(function (result) {
-                        if ($.cookie("EQUIZ_FLASH") == "error=postlinkgroupfail") {
-                            main.showError(result);
+                        if (result == "postLinkGroupFail") {
+                            main.showError("No se ha podido unir al grupo. Compruebe que el código es correcto");
                         } else {
                             // refresh user-groups
                             $(document).trigger("GROUPS_CHANGE");

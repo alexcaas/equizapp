@@ -63,7 +63,7 @@
 
         var groups = [];
 
-        // groupcode, groupname, groupcodestr, groupitemsnumber, usertrait
+        // groupcode, groupname, groupcodestr, groupitemsnumber, usertrait, usertraitlastmodif
         database.execSQL("SELECT * FROM tgroup", []).done(function (resultgroup) {
 
             for (var i = 0; i < resultgroup.rows.length; ++i) {

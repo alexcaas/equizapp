@@ -51,7 +51,12 @@
 
             // on Ok item
             "btap; [data-action='gostart']": function (event) {
-                $(document).trigger("GROUPS_CHANGE");
+                if (conf.mobile == true) {
+                    $(document).trigger("SYNC");
+                } else {
+                    $(document).trigger("GROUPS_CHANGE");
+                }
+
             }
         }
 

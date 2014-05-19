@@ -87,8 +87,8 @@
                     userlastnames: $inputuserlastnames.val(),
                     userpassword: $inputuserpasword.val()
                 }).done(function (result) {
-                    if ($.cookie("EQUIZ_FLASH") == "error=postupdateuserfail") {
-                        main.showError(result);
+                    if (result == "postUpdateUserFail") {
+                        main.showError("Se ha producido un error actualizando los datos del usuario");
                     } else {
                         main.showInfo("Actualizado correctamente");
                         $(document).trigger("USER_CHANGE", result);
