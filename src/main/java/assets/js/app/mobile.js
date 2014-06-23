@@ -10,7 +10,7 @@ var conf = conf || {};
     // Config
     conf.mobile = true;
     conf.assets = "/assets/"; // ""
-    conf.host = ""; // "http://192.168.1.8:8080";
+    conf.host = "http://54.76.6.10:8080"; // "http://192.168.1.8:8080";
 
     // Last sync
     mobile.lastSync = "";
